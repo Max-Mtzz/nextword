@@ -1,26 +1,38 @@
+/* Usamos una variable CSS (--rot) para que la animación no borre la inclinación inicial */
 @keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
-  100% { transform: translateY(0px); }
+  0% { transform: translateY(0px) rotate(var(--rot)); }
+  50% { transform: translateY(-15px) rotate(var(--rot)); }
+  100% { transform: translateY(0px) rotate(var(--rot)); }
 }
 
 .floating-bubble {
   position: absolute;
-  animation: float 6s ease-in-out infinite;
-  /* Aquí puedes agregar los estilos de la burbuja azul, bordes redondeados, etc. */
-  background-color: #7dd3fc;
-  color: #0c4a6e;
-  padding: 10px 20px;
-  border-radius: 15px;
+  background-color: #8ce1ff; /* Azul clarito de tu diseño */
+  color: #006685;
+  padding: 15px 25px;
+  border-radius: 20px;
   font-weight: bold;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  animation: float 6s ease-in-out infinite;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  z-index: 5;
 }
 
-/* Puedes variar la velocidad y el retraso para que no se muevan todas igual */
-.bubble-1 { top: 20%; left: 15%; animation-duration: 5s; transform: rotate(-10deg); }
-.bubble-2 { top: 25%; right: 20%; animation-duration: 7s; animation-delay: 1s; transform: rotate(15deg); }
-.bubble-3 { bottom: 30%; left: 20%; animation-duration: 6s; animation-delay: 2s; transform: rotate(20deg); }
-.bubble-4 { bottom: 40%; left: 20%; animation-duration: 6s; animation-delay: 2s; transform: rotate(20deg); }
-.bubble-5 { bottom: 50%; left: 20%; animation-duration: 6s; animation-delay: 2s; transform: rotate(20deg); }
-.bubble-6 { bottom: 60%; left: 20%; animation-duration: 6s; animation-delay: 2s; transform: rotate(20deg); }
-/* ... añade más clases según las posiciones de tu diseño ... */
+/* Esto crea el "pico" del globo de chat en la esquina inferior izquierda */
+.floating-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 20px;
+  border-width: 15px 15px 0 0;
+  border-style: solid;
+  border-color: #8ce1ff transparent transparent transparent;
+}
+
+/* Posiciones exactas basadas en tu diseño */
+.bubble-1 { top: 15%; left: 18%; animation-duration: 5s; --rot: -5deg; font-size: 1.5rem; }
+.bubble-2 { top: 20%; right: 22%; animation-duration: 7s; animation-delay: 1s; --rot: -10deg; font-size: 1.5rem; }
+.bubble-3 { top: 40%; left: 12%; animation-duration: 6s; animation-delay: 0.5s; --rot: 10deg; font-size: 1.8rem; }
+.bubble-4 { top: 45%; right: 18%; animation-duration: 5.5s; animation-delay: 1.5s; --rot: -5deg; font-size: 1.8rem; }
+.bubble-5 { bottom: 20%; left: 18%; animation-duration: 6.5s; animation-delay: 0.2s; --rot: -15deg; font-size: 1.6rem; }
+.bubble-6 { bottom: 20%; right: 15%; animation-duration: 6s; animation-delay: 2s; --rot: -20deg; font-size: 1.8rem; }
