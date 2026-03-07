@@ -1,0 +1,23 @@
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+  100% { transform: translateY(0px); }
+}
+
+.floating-bubble {
+  position: absolute;
+  animation: float 6s ease-in-out infinite;
+  /* Aquí puedes agregar los estilos de la burbuja azul, bordes redondeados, etc. */
+  background-color: #7dd3fc;
+  color: #0c4a6e;
+  padding: 10px 20px;
+  border-radius: 15px;
+  font-weight: bold;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* Puedes variar la velocidad y el retraso para que no se muevan todas igual */
+.bubble-1 { top: 20%; left: 15%; animation-duration: 5s; transform: rotate(-10deg); }
+.bubble-2 { top: 25%; right: 20%; animation-duration: 7s; animation-delay: 1s; transform: rotate(15deg); }
+.bubble-3 { bottom: 25%; left: 20%; animation-duration: 6s; animation-delay: 2s; transform: rotate(20deg); }
+/* ... añade más clases según las posiciones de tu diseño ... */

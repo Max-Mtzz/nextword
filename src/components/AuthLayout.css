@@ -1,0 +1,21 @@
+.auth-container {
+  min-height: 100vh;
+  width: 100vw;
+  background-color: #f8f9fa; /* Color de fondo claro */
+  background-image: url('../assets/olas-fondo.svg'); /* Ruta a tu SVG */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-content {
+  z-index: 10;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
