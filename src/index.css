@@ -1,0 +1,20 @@
+* {
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+html, body {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden; /* Mata el scroll por completo */
+  background-color: #f8f9fa;
+}
+
+#root {
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: none !important; /* Aquí matamos el margen izquierdo/derecho que te está saliendo */
+  margin: 0 !important;
+  padding: 0 !important;
+}

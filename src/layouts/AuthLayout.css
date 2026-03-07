@@ -1,16 +1,19 @@
 .auth-container {
-  min-height: 100vh;
+  position: fixed; /* Ancla el contenedor a la ventana del navegador */
+  top: 0;
+  left: 0;
   width: 100vw;
-  background-color: #f8f9fa; /* Color de fondo claro */
-  background-image: url('../assets/WAVES 1.svg'); /* Ruta a tu SVG */
+  height: 100vh;
+  background-color: #f8f9fa;
+  background-image: url('../assets/WAVES 1.svg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative;
-  overflow: hidden;
+  overflow: hidden; /* Corta cualquier burbuja que empuje los bordes */
+  z-index: 1;
 }
 
 .auth-content {
