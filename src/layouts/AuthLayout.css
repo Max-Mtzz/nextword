@@ -22,3 +22,12 @@
   display: flex;
   justify-content: center;
 }
+
+.auth-logo {
+  position: absolute;
+  top: 30px; /* Distancia desde arriba */
+  left: 40px; /* Distancia desde la izquierda */
+  width: 180px; /* Tamaño del logo (ajusta este número si lo ves muy grande o pequeño) */
+  z-index: 20; /* Asegura que el logo flote por encima de las olas y las burbujas */
+  object-fit: contain;
+}

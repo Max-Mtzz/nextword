@@ -1,10 +1,13 @@
 import React from 'react';
 import './AuthLayout.css';
+import logo from '../assets/nextword.png'; // Importamos tu nuevo logo
 
 export const AuthLayout = ({ children }) => {
   return (
     <div className="auth-container">
-      {/* Tu SVG de olas irá como fondo de este contenedor en el CSS */}
+      {/* Etiqueta de la imagen con su clase */}
+      <img src={logo} alt="NextWord Logo" className="auth-logo" />
+      
       <div className="auth-content">
         {children}
       </div>
