@@ -13,24 +13,39 @@
 
 /* Barra lateral izquierda */
 .sidebar {
-  width: 260px;
-  background-color: rgba(248, 249, 250, 0.85); /* Un poco transparente para que se vea la ola de fondo */
-  backdrop-filter: blur(5px); /* Efecto cristal */
+  width: 80px; /* Tamaño pequeño por defecto */
+  background-color: rgba(248, 249, 250, 0.85);
+  backdrop-filter: blur(5px);
   display: flex;
   flex-direction: column;
-  padding: 2rem 1rem;
+  padding: 2rem 0; /* Quitamos padding a los lados para poder centrar bien */
   box-shadow: 2px 0 10px rgba(0,0,0,0.05);
-  z-index: 10;
+  z-index: 20;
+  transition: width 0.3s ease; /* Esto hace la animación suave */
+  overflow: hidden; /* Oculta lo que se salga de los 80px */
+  white-space: nowrap; /* Evita que el texto baje a otra línea */
 }
 
+/* 2. La barra lateral expandida al pasar el mouse */
+.sidebar:hover {
+  width: 260px; /* Crece al pasar el mouse */
+}
+
+/* 3. El contenedor del logo */
 .sidebar-logo {
-  color: #0082a9;
-  font-weight: bold;
-  font-size: 1.1rem;
   display: flex;
   align-items: center;
   margin-bottom: 3rem;
-  padding-left: 1rem;
+  padding: 0 1.5rem; /* Separación de la orilla */
+  width: 260px; /* Mantiene su tamaño original por dentro para que el logo no se apachurre */
+  box-sizing: border-box;
+}
+
+/* Agrega esta nueva clase para controlar el tamaño de la imagen */
+.sidebar-logo-img {
+  max-width: 130px;
+  height: auto;
+  object-fit: contain;
 }
 
 .sidebar-menu {
@@ -43,7 +58,7 @@
 .sidebar-link {
   display: flex;
   align-items: center;
-  padding: 0.8rem 1rem;
+  padding: 0.8rem 1.5rem; /* Acomoda el icono exactamente en el centro de los 80px */
   color: #0082a9;
   text-decoration: none;
   font-weight: bold;
@@ -51,14 +66,31 @@
   cursor: pointer;
   transition: background 0.2s;
   font-size: 0.95rem;
+  width: 260px; /* Obliga al enlace a medir lo de la barra abierta */
+  box-sizing: border-box;
 }
 
 .sidebar-link:hover, .sidebar-link.active {
   background: rgba(0, 130, 169, 0.1);
 }
 
+/* 5. Los iconos */
 .sidebar-link img {
-  width: 22px; height: 22px; margin-right: 1rem;
+  width: 24px; 
+  height: 24px; 
+  min-width: 24px; /* Súper importante: evita que el ícono se encoja cuando la barra se hace chiquita */
+  margin-right: 1.2rem;
+}
+
+/* 6. Animación del texto para que desaparezca suavemente */
+.sidebar-link span {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.sidebar:hover .sidebar-link span {
+  opacity: 1; /* El texto aparece cuando la barra está abierta */
+  transition-delay: 0.1s; /* Espera un poquito a que la barra abra antes de mostrar texto */
 }
 
 /* Contenido principal derecho */

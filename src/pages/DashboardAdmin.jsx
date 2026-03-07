@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './DashboardAdmin.css';
-
+import nextWordLogo from '../assets/nextword.png';
 // Importamos todos los íconos (asegúrate de que los nombres coincidan exactamente)
 import homeIcon from '../assets/home_icon.svg';
 import bookIcon from '../assets/book_icon.svg';
@@ -16,9 +16,8 @@ export const DashboardAdmin = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Aquí después limpiarías los tokens de Supabase/SpringBoot
     setIsModalOpen(false);
-    navigate('/'); // Nos regresa al Login
+    navigate('/');
   };
 
   return (
@@ -26,26 +25,27 @@ export const DashboardAdmin = () => {
       
       {/* Barra Lateral */}
       <aside className="sidebar">
+        {/* 2. REEMPLAZA EL CONTENIDO DE ESTE DIV */}
         <div className="sidebar-logo">
-          {/* Si tienes un icono de mundo ponlo aquí, usaré un texto como placeholder */}
-          🌎 LANGUAGE PORTAL
+          {/* Ponemos la imagen y quitamos el texto antiguo */}
+          <img src={nextWordLogo} alt="NextWord Logo" className="sidebar-logo-img" />
         </div>
 
         <div className="sidebar-menu">
           <div className="sidebar-link active">
-            <img src={homeIcon} alt="Inicio" /> Página principal
+            <img src={homeIcon} alt="Inicio" /> <span>Página principal</span>
           </div>
           <div className="sidebar-link">
-            <img src={bookIcon} alt="Cursos" /> Gestionar Cursos
+            <img src={bookIcon} alt="Cursos" /> <span>Gestionar Cursos</span>
           </div>
           <div className="sidebar-link">
-            <img src={settingsIcon} alt="Usuarios" /> Gestionar Usuarios
+            <img src={settingsIcon} alt="Usuarios" /> <span>Gestionar Usuarios</span>
           </div>
         </div>
 
         {/* Botón de cerrar sesión al fondo */}
         <div className="sidebar-link" onClick={() => setIsModalOpen(true)}>
-          <img src={logoutIcon} alt="Salir" /> Cerrar sesión
+          <img src={logoutIcon} alt="Salir" /> <span>Cerrar sesión</span>
         </div>
       </aside>
 
