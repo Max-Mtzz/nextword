@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { AuthLayout } from '../layouts/AuthLayout';
 import '../components/FloatingBubbles.css'; 
 import './Login.css'; // ¡Importamos el nuevo CSS!
+import { Link } from 'react-router-dom';
 
 export const Login = () => {
   const [formData, setFormData] = useState({ usuario: '', password: '' });
@@ -51,9 +52,9 @@ export const Login = () => {
             />
           </div>
 
-          <a href="#" className="forgot-password">
-            ¿Olvidaste tu contraseña?
-          </a>
+          <Link to="/recuperar" className="forgot-password">
+        ¿Olvidaste tu contraseña?
+        </Link>
 
           <button type="submit" className="login-button">
             INICIAR SESIÓN
