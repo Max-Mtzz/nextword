@@ -204,3 +204,132 @@
   margin-top: 1rem; /* Pequeño ajuste hacia abajo desde el borde superior */
   z-index: 5;
 }
+
+/* ========================================= */
+/* === ESTILOS SECCIÓN CURSOS (GESTIÓN) === */
+/* ========================================= */
+
+.courses-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  width: 100%;
+  max-width: 600px; /* Para mantener alineado el botón Añadir con el bloque de cursos */
+}
+
+.courses-subtitle {
+  color: #374151;
+  font-size: 1.1rem;
+}
+
+.btn-add {
+  background-color: #0082a9;
+  color: white;
+  font-weight: bold;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-add:hover {
+  background-color: #006685;
+}
+
+/* Cuadrícula de tarjetas de cursos */
+.courses-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  max-width: 600px;
+}
+
+/* Tarjeta individual (Diseño cuadrado) */
+.course-card-simple {
+  background-color: #f8fafc; /* Fondo un poco grisáceo/azulado claro */
+  border: 1px solid #f1f5f9;
+  border-radius: 12px;
+  width: 140px;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative; /* Base para el botón de puntos y el menú */
+  box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+  cursor: pointer;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.course-card-simple:hover {
+  box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+  transform: translateY(-2px);
+}
+
+.course-flag {
+  width: 50px;
+  height: 35px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 0.8rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.course-name {
+  color: #0082a9;
+  font-weight: bold;
+  font-size: 0.95rem;
+}
+
+/* Botón de los tres puntos */
+.dots-btn-simple {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dots-btn-simple img {
+  height: 18px; /* Controlamos qué tan altos son */
+  width: auto; /* El ancho se ajusta automáticamente para no deformarse */
+  object-fit: contain;
+}
+
+/* === DROPDOWN MENÚ (Solo texto) === */
+.dropdown-simple {
+  position: absolute;
+  top: 25px;
+  right: -40px; /* Lo empuja un poco hacia afuera como en tu diseño */
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  border: 1px solid #e5e7eb;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  padding: 5px 0;
+  min-width: 90px;
+}
+
+.dropdown-item-text {
+  padding: 8px 15px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: #1f2937;
+  width: 100%;
+}
+
+.dropdown-item-text:hover {
+  background-color: #f3f4f6;
+}
