@@ -2,7 +2,8 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Login } from './pages/Login';
 import { RecuperarPassword } from './pages/RecuperarPassword';
-import { RestablecerPassword } from './pages/RestablecerPassword'; // Aquí importamos la nueva
+import { RestablecerPassword } from './pages/RestablecerPassword';
+import { DashboardAdmin } from './pages/DashboardAdmin'; // ¡Aquí importamos la nueva pantalla!
 
 function App() {
   return (
@@ -10,7 +11,10 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/recuperar" element={<RecuperarPassword />} />
-        <Route path="/restablecer" element={<RestablecerPassword />} /> {/* Aquí registramos la ruta */}
+        <Route path="/restablecer" element={<RestablecerPassword />} />
+        
+        {/* ¡Aquí le decimos a React que renderice el Dashboard en esta ruta! */}
+        <Route path="/dashboard" element={<DashboardAdmin />} /> 
       </Routes>
     </BrowserRouter>
   );

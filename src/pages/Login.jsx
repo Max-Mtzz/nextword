@@ -2,19 +2,22 @@ import React, { useState } from 'react';
 import { AuthLayout } from '../layouts/AuthLayout';
 import '../components/FloatingBubbles.css'; 
 import './Login.css'; // ¡Importamos el nuevo CSS!
-import { Link } from 'react-router-dom';
+import { Link , useNavigate} from 'react-router-dom';
 
 export const Login = () => {
   const [formData, setFormData] = useState({ usuario: '', password: '' });
+  const navigate = useNavigate(); // Inicializamos el hook aquí
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target; // Corregí un pequeño detalle aquí (agregué .target)
+    const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Datos a enviar:", formData);
+    // ¡Aquí hacemos la magia de enviarte al dashboard!
+    navigate('/dashboard'); 
   };
 
   return (
