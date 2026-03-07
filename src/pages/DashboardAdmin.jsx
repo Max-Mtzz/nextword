@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './DashboardAdmin.css';
-import nextWordLogo from '../assets/nextword.png';
-// Importamos todos los íconos (asegúrate de que los nombres coincidan exactamente)
+
+// Importaciones de imágenes (se mantienen igual)
+import nextWordLogo from '../assets/nextword.png'; 
 import homeIcon from '../assets/home_icon.svg';
 import bookIcon from '../assets/book_icon.svg';
 import settingsIcon from '../assets/settings_icon.svg';
@@ -25,12 +26,8 @@ export const DashboardAdmin = () => {
       
       {/* Barra Lateral */}
       <aside className="sidebar">
-        {/* 2. REEMPLAZA EL CONTENIDO DE ESTE DIV */}
-        <div className="sidebar-logo">
-          {/* Ponemos la imagen y quitamos el texto antiguo */}
-          <img src={nextWordLogo} alt="NextWord Logo" className="sidebar-logo-img" />
-        </div>
-
+        
+        
         <div className="sidebar-menu">
           <div className="sidebar-link active">
             <img src={homeIcon} alt="Inicio" /> <span>Página principal</span>
@@ -51,10 +48,11 @@ export const DashboardAdmin = () => {
 
       {/* Contenido Principal */}
       <main className="dashboard-content">
-        <div className="search-container">
-          <span>🔍</span>
-          <input type="text" placeholder="Buscar configuración..." />
-        </div>
+        <img 
+          src={nextWordLogo} 
+          alt="NextWord Logo" 
+          className="dashboard-content-logo" 
+        />
 
         <h1 className="dashboard-greeting">Hola ¡Diego!</h1>
         

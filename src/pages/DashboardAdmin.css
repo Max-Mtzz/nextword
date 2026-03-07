@@ -31,22 +31,6 @@
   width: 260px; /* Crece al pasar el mouse */
 }
 
-/* 3. El contenedor del logo */
-.sidebar-logo {
-  display: flex;
-  align-items: center;
-  margin-bottom: 3rem;
-  padding: 0 1.5rem; /* Separación de la orilla */
-  width: 260px; /* Mantiene su tamaño original por dentro para que el logo no se apachurre */
-  box-sizing: border-box;
-}
-
-/* Agrega esta nueva clase para controlar el tamaño de la imagen */
-.sidebar-logo-img {
-  max-width: 130px;
-  height: auto;
-  object-fit: contain;
-}
 
 .sidebar-menu {
   flex: 1;
@@ -102,27 +86,6 @@
   z-index: 5;
 }
 
-/* Buscador superior */
-.search-container {
-  display: flex;
-  align-items: center;
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 0.6rem 1rem;
-  width: 350px;
-  margin-bottom: 4rem;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-}
-
-.search-container input {
-  border: none;
-  outline: none;
-  margin-left: 0.5rem;
-  width: 100%;
-  color: #4b5563;
-  font-size: 0.9rem;
-}
 
 .dashboard-greeting {
   font-size: 1.5rem;
@@ -230,4 +193,14 @@
   border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
+}
+
+/* Nuevo estilo para el logo en el encabezado del contenido */
+.dashboard-content-logo {
+  width: 160px; /* Tamaño del logo */
+  height: auto;
+  object-fit: contain;
+  margin-bottom: 3.5rem; /* Espacio antes del saludo "Hola ¡Diego!" */
+  margin-top: 1rem; /* Pequeño ajuste hacia abajo desde el borde superior */
+  z-index: 5;
 }
