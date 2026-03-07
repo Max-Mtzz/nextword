@@ -2,14 +2,16 @@ import React, { useState } from 'react';
 import { AuthLayout } from '../layouts/AuthLayout';
 import '../components/FloatingBubbles.css'; 
 import './RecuperarPassword.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export const RecuperarPassword = () => {
   const [correo, setCorreo] = useState('');
+  const navigate = useNavigate(); // Inicializamos el hook
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Se enviará la recuperación a:", correo);
+    navigate('/restablecer'); // Le decimos que nos lleve a la nueva pantalla
   };
 
   return (

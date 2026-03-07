@@ -2,16 +2,15 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Login } from './pages/Login';
 import { RecuperarPassword } from './pages/RecuperarPassword';
+import { RestablecerPassword } from './pages/RestablecerPassword'; // Aquí importamos la nueva
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* La ruta principal "/" mostrará el Login */}
         <Route path="/" element={<Login />} />
-        
-        {/* La ruta "/recuperar" mostrará tu nueva pantalla */}
         <Route path="/recuperar" element={<RecuperarPassword />} />
+        <Route path="/restablecer" element={<RestablecerPassword />} /> {/* Aquí registramos la ruta */}
       </Routes>
     </BrowserRouter>
   );
