@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { Login } from './pages/Login';
 import { RecuperarPassword } from './pages/RecuperarPassword';
 import { RestablecerPassword } from './pages/RestablecerPassword';
@@ -7,7 +7,6 @@ import { DashboardAdmin } from './pages/DashboardAdmin'; // ¡Aquí importamos l
 
 function App() {
   return (
-    <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/recuperar" element={<RecuperarPassword />} />
@@ -16,7 +15,6 @@ function App() {
         {/* ¡Aquí le decimos a React que renderice el Dashboard en esta ruta! */}
         <Route path="/dashboard" element={<DashboardAdmin />} /> 
       </Routes>
-    </BrowserRouter>
   );
 }
 
