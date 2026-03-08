@@ -527,3 +527,110 @@
   font-weight: bold;
   cursor: pointer;
 }
+
+/* ========================================= */
+/* === MODAL ELIMINAR CURSO === */
+/* ========================================= */
+
+.modal-delete-content {
+  background: white;
+  padding: 2.5rem 2rem;
+  border-radius: 12px;
+  width: 420px;
+  max-width: 90vw;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.alert-icon {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 1rem;
+}
+
+.delete-title {
+  font-size: 1.2rem;
+  color: #1f2937;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.delete-subtitle {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+}
+
+/* Caja gris que muestra qué curso se eliminará */
+.course-to-delete {
+  background: #fcfcfc;
+  border: 1px solid #f3f4f6;
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  font-size: 0.9rem;
+}
+
+.course-to-delete span {
+  color: #9ca3af;
+  font-weight: bold;
+}
+
+.course-to-delete strong {
+  color: #1f2937;
+}
+
+/* Input de contraseña para el paso 2 */
+.password-group {
+  text-align: left;
+  margin-bottom: 1.5rem;
+}
+
+.password-group label {
+  display: block;
+  font-size: 0.85rem;
+  color: #4b5563;
+  margin-bottom: 0.5rem;
+}
+
+/* Caja de error roja */
+.error-msg-box {
+  background-color: #fef2f2;
+  color: #dc2626;
+  font-size: 0.8rem;
+  padding: 0.6rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 0.8rem;
+}
+
+.error-msg-box img {
+  width: 14px;
+  height: 14px;
+}
+
+.btn-confirm-red {
+  background: #b91c1c;
+  color: white;
+  padding: 0.6rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 50%;
+}
+
+.btn-cancel-delete {
+  background: white;
+  border: 1px solid #e5e7eb;
+  color: #6b7280;
+  padding: 0.6rem 1.5rem;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 50%;
+}

@@ -13,12 +13,11 @@ import pencilIcon from '../assets/pencil_icon.svg';
 import bookIcon2 from '../assets/book_icon_2.svg';
 import menuIcon from '../assets/menu_icon.svg'; 
 import chinaIcon from '../assets/china_icon.svg'; 
-
-// === NUEVOS ÍCONOS PARA EL MODAL ===
 import nubeIcon from '../assets/nube.svg';
 import imagenIcon from '../assets/imagen.svg';
 import boteBasuraIcon from '../assets/bote_basura.svg';
 import recargarIcon from '../assets/recargar.svg';
+import alertaIcon from '../assets/alerta.svg';
 
 const cursosData = [
   
@@ -30,9 +29,14 @@ export const DashboardAdmin = () => {
   const [activeView, setActiveView] = useState('main'); 
   const [openMenuId, setOpenMenuId] = useState(null);
   
-  // ESTADOS PARA LOS MODALES
-  const [isModalOpen, setIsModalOpen] = useState(false); // Modal de cerrar sesión
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false); // NUEVO: Modal de añadir curso
+  // ESTADOS MODALES
+  const [isModalOpen, setIsModalOpen] = useState(false); 
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false); 
+  
+  // ESTADOS PARA ELIMINAR
+  const [deleteModal, setDeleteModal] = useState({ isOpen: false, step: 1, courseId: null });
+  const [deletePassword, setDeletePassword] = useState('');
+  const [deleteError, setDeleteError] = useState(false);
 
   const navigate = useNavigate();
 
@@ -49,6 +53,33 @@ export const DashboardAdmin = () => {
     e.stopPropagation();
     setOpenMenuId(openMenuId === id ? null : id);
   };
+
+  // FUNCIONES PARA ELIMINAR
+  const openDeleteFlow = (courseId) => {
+    setOpenMenuId(null);
+    setDeleteModal({ isOpen: true, step: 1, courseId: courseId });
+    setDeletePassword('');
+    setDeleteError(false);
+  };
+
+  const handleNextDeleteStep = () => {
+    setDeleteModal({ ...deleteModal, step: 2 });
+  };
+
+  const handleConfirmDelete = () => {
+    if (deletePassword !== '1234') {
+      setDeleteError(true);
+      return;
+    }
+    console.log("Curso eliminado con ID:", deleteModal.courseId);
+    setDeleteModal({ isOpen: false, step: 1, courseId: null });
+  };
+
+  const cancelDelete = () => {
+    setDeleteModal({ isOpen: false, step: 1, courseId: null });
+  };
+
+  const courseToDelete = cursosData.find(c => c.id === deleteModal.courseId);
 
   // VISTA A: Página Principal
   const renderMainContent = () => (
@@ -79,7 +110,6 @@ export const DashboardAdmin = () => {
       
       <div className="courses-header">
         <span className="courses-subtitle">Cursos:</span>
-        {/* Agregamos el onClick para abrir el nuevo modal */}
         <button className="btn-add" onClick={() => setIsAddModalOpen(true)}>+ Añadir</button>
       </div>
 
@@ -92,7 +122,7 @@ export const DashboardAdmin = () => {
             {openMenuId === curso.id && (
               <div className="dropdown-simple">
                 <button className="dropdown-item-text">Editar</button>
-                <button className="dropdown-item-text">Eliminar</button>
+                <button className="dropdown-item-text" onClick={() => openDeleteFlow(curso.id)}>Eliminar</button>
               </div>
             )}
             {curso.flag ? (
@@ -145,25 +175,20 @@ export const DashboardAdmin = () => {
         </div>
       )}
 
-      {/* === NUEVO MODAL: AÑADIR CURSO === */}
+      {/* === MODAL AÑADIR CURSO === */}
       {isAddModalOpen && (
         <div className="modal-overlay">
           <div className="modal-content-large">
-            
             <div className="modal-header">
               <h3>Añadir Curso</h3>
               <button className="close-btn" onClick={() => setIsAddModalOpen(false)}>×</button>
             </div>
-
             <div className="form-group">
               <label>Nombre del curso*</label>
-              <input type="text" className="form-control" placeholder="Nombre del curso" />
+              <input type="text" className="form-control" placeholder="Inglés Intermedio B1" />
             </div>
-
             <div className="form-group">
               <label>Imagen representativa del curso*</label>
-              
-              {/* Caja de subida */}
               <div className="upload-area">
                 <img src={nubeIcon} alt="Subir" className="nube-icon" />
                 <p>Arrastra y suelta tu imagen aquí<br/>o haz clic para seleccionar</p>
@@ -173,11 +198,8 @@ export const DashboardAdmin = () => {
                 </button>
               </div>
               <p className="format-text">Formatos aceptados: JPG, PNG.</p>
-
-              {/* Caja de vista previa (tal como en tu diseño) */}
               <label>Vista previa</label>
               <div className="preview-area">
-                {/* Cuadro gris simulando la imagen subida */}
                 <div className="preview-thumbnail"></div>
                 <div className="preview-actions">
                   <button className="action-btn btn-replace">
@@ -190,9 +212,7 @@ export const DashboardAdmin = () => {
                   </button>
                 </div>
               </div>
-
             </div>
-
             <div className="modal-footer">
               <span className="required-text">Los campos marcados con (*) son obligatorios</span>
               <div className="footer-buttons">
@@ -200,6 +220,65 @@ export const DashboardAdmin = () => {
                 <button className="btn-confirm-blue" onClick={() => setIsAddModalOpen(false)}>Confirmar</button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* === MODAL DE ELIMINAR CURSO === */}
+      {deleteModal.isOpen && (
+        <div className="modal-overlay">
+          <div className="modal-delete-content">
+            
+            {deleteModal.step === 1 && (
+              <>
+                <img src={alertaIcon} alt="Alerta" className="alert-icon" />
+                <h3 className="delete-title">¿Estás seguro de que deseas eliminar este curso?</h3>
+                <p className="delete-subtitle">Esta acción no se puede deshacer.</p>
+                
+                <div className="course-to-delete">
+                  <span>Curso:</span>
+                  <strong>{courseToDelete?.nombre}</strong>
+                </div>
+
+                <div className="modal-buttons">
+                  <button className="btn-cancel-delete" onClick={cancelDelete}>Cancelar</button>
+                  <button className="btn-confirm-red" onClick={handleNextDeleteStep}>Eliminar</button>
+                </div>
+              </>
+            )}
+
+            {deleteModal.step === 2 && (
+              <>
+                <h3 className="delete-title">Confirmar eliminación</h3>
+                <p className="delete-subtitle">Por favor, ingresa tu contraseña para confirmar esta acción.</p>
+                
+                <div className="password-group">
+                  <label>Contraseña*</label>
+                  <input 
+                    type="password" 
+                    className="form-control" 
+                    placeholder="........"
+                    value={deletePassword}
+                    onChange={(e) => {
+                      setDeletePassword(e.target.value);
+                      setDeleteError(false);
+                    }}
+                  />
+                  
+                  {deleteError && (
+                    <div className="error-msg-box">
+                      <img src={alertaIcon} alt="Error" />
+                      Contraseña incorrecta. Intenta nuevamente.
+                    </div>
+                  )}
+                </div>
+
+                <div className="modal-buttons" style={{marginTop: '2rem'}}>
+                  <button className="btn-cancel-delete" onClick={cancelDelete}>Cancelar</button>
+                  <button className="btn-confirm-red" onClick={handleConfirmDelete}>Confirmar<br/>eliminación</button>
+                </div>
+              </>
+            )}
 
           </div>
         </div>
