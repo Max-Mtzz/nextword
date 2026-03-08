@@ -896,3 +896,13 @@
 .btn-action-red:hover {
   background: #fee2e2;
 }
+
+/* Caja de detalles para eliminar horario */
+.delete-schedule-details {
+  background: #f8fafc;
+  border: 1px solid #f1f5f9;
+  border-radius: 8px;
+  padding: 1.2rem;
+  margin-bottom: 2rem;
+  text-align: left;
+}

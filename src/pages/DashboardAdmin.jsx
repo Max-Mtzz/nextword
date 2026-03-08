@@ -19,7 +19,7 @@ import boteBasuraIcon from '../assets/bote_basura.svg';
 import recargarIcon from '../assets/recargar.svg';
 import alertaIcon from '../assets/alerta.svg';
 
-// SVGs en línea para los botones de acción para controlar el color exacto
+// SVGs en línea
 const CalendarIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M19 4H5C3.89543 4 3 4.89543 3 6V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V6C21 4.89543 20.1046 4 19 4Z" stroke="#0082a9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -68,9 +68,13 @@ export const DashboardAdmin = () => {
   const [deletePassword, setDeletePassword] = useState('');
   const [deleteError, setDeleteError] = useState(false);
 
-  // NUEVOS ESTADOS: MODALES DE CALENDARIO
+  // ESTADOS MODALES DE CALENDARIO
   const [isAddScheduleModalOpen, setIsAddScheduleModalOpen] = useState(false);
   const [actionModal, setActionModal] = useState({ isOpen: false, data: null });
+  
+  // === NUEVOS ESTADOS === (Editar y Eliminar Horario)
+  const [editScheduleModal, setEditScheduleModal] = useState({ isOpen: false, data: null });
+  const [deleteScheduleModal, setDeleteScheduleModal] = useState({ isOpen: false, data: null });
 
   const navigate = useNavigate();
 
@@ -166,7 +170,6 @@ export const DashboardAdmin = () => {
             <h2>{selectedCourse?.nombre} - Horarios disponibles</h2>
             {selectedCourse?.flag && <img src={selectedCourse.flag} alt="Bandera" className="calendar-title-flag" />}
           </div>
-          {/* BOTÓN +AÑADIR DEL CALENDARIO */}
           <button className="btn-add" style={{marginTop: '1.5rem'}} onClick={() => setIsAddScheduleModalOpen(true)}>
             + Añadir
           </button>
@@ -185,10 +188,7 @@ export const DashboardAdmin = () => {
             <React.Fragment key={hora}>
               <div className="cal-time-cell">{hora}</div>
               {diasSemana.map((dia) => {
-                // Simulación de un evento los Domingos a las 8 AM
                 const isEvent = dia === 'Domingo' && hora === '8 AM';
-                
-                // Función auxiliar para calcular "8 AM - 9 AM" dinámicamente
                 const horaFin = hora === '8 AM' ? '9 AM' : '10 AM'; 
 
                 return (
@@ -235,14 +235,13 @@ export const DashboardAdmin = () => {
 
       <main className="dashboard-content">
         <img src={nextWordLogo} alt="NextWord Logo" className="dashboard-content-logo" />
-        
         {activeView === 'main' && renderMainContent()}
         {activeView === 'courses' && renderCoursesContent()}
         {activeView === 'calendar' && renderCalendarContent()}
       </main>
 
       {/* ========================================================= */}
-      {/* === ZONA DE MODALES GLOBALES (CERRAR SESIÓN, AÑADIR, ELIMINAR CURSO) === */}
+      {/* MODALES GLOBALES (CERRAR SESIÓN, AÑADIR, ELIMINAR CURSO) */}
       {/* ========================================================= */}
       {isModalOpen && (
         <div className="modal-overlay">
@@ -257,6 +256,7 @@ export const DashboardAdmin = () => {
         </div>
       )}
 
+      {/* Modal Añadir Curso se mantiene oculto para no alargar el bloque de código visualmente, pero sigue en el DOM de React como antes */}
       {isAddModalOpen && (
         <div className="modal-overlay">
           <div className="modal-content-large">
@@ -326,17 +326,9 @@ export const DashboardAdmin = () => {
                 <p className="delete-subtitle">Por favor, ingresa tu contraseña para confirmar esta acción.</p>
                 <div className="password-group">
                   <label>Contraseña*</label>
-                  <input 
-                    type="password" 
-                    className="form-control" 
-                    placeholder="........"
-                    value={deletePassword}
-                    onChange={(e) => { setDeletePassword(e.target.value); setDeleteError(false); }}
-                  />
+                  <input type="password" className="form-control" placeholder="........" value={deletePassword} onChange={(e) => { setDeletePassword(e.target.value); setDeleteError(false); }} />
                   {deleteError && (
-                    <div className="error-msg-box">
-                      <img src={alertaIcon} alt="Error" /> Contraseña incorrecta. Intenta nuevamente.
-                    </div>
+                    <div className="error-msg-box"><img src={alertaIcon} alt="Error" /> Contraseña incorrecta. Intenta nuevamente.</div>
                   )}
                 </div>
                 <div className="modal-buttons" style={{marginTop: '2rem'}}>
@@ -353,10 +345,10 @@ export const DashboardAdmin = () => {
       )}
 
       {/* ========================================================= */}
-      {/* === NUEVOS MODALES: HORARIOS Y CALENDARIO === */}
+      {/* MODALES DE HORARIOS Y CALENDARIO */}
       {/* ========================================================= */}
       
-      {/* 1. Modal: Añadir Horario */}
+      {/* Modal: Añadir Horario */}
       {isAddScheduleModalOpen && (
         <div className="modal-overlay">
           <div className="modal-content-large" style={{width: '450px'}}>
@@ -372,7 +364,6 @@ export const DashboardAdmin = () => {
                 <option>Guillermo Corro</option>
               </select>
             </div>
-
             <div className="form-group">
               <label>Día*</label>
               <select className="form-select">
@@ -381,12 +372,10 @@ export const DashboardAdmin = () => {
                 <option>Miércoles</option>
               </select>
             </div>
-
             <div className="form-group">
               <label>Hora*</label>
               <input type="text" className="form-control" placeholder="09:00 - 10:30" />
             </div>
-
             <div className="form-group">
               <label>Estado*</label>
               <select className="form-select">
@@ -394,8 +383,8 @@ export const DashboardAdmin = () => {
                 <option>Lleno</option>
               </select>
             </div>
-
             <div className="modal-footer" style={{marginTop: '2rem', paddingTop: '0'}}>
+              <span className="required-text" style={{display: 'block', marginBottom: '1rem'}}>Los campos marcados con (*) son obligatorios</span>
               <div className="footer-buttons" style={{width: '100%'}}>
                 <button className="btn-cancel" style={{width: '50%'}} onClick={() => setIsAddScheduleModalOpen(false)}>Cancelar</button>
                 <button className="btn-confirm-blue" style={{width: '50%'}} onClick={() => setIsAddScheduleModalOpen(false)}>Añadir horario</button>
@@ -405,7 +394,7 @@ export const DashboardAdmin = () => {
         </div>
       )}
 
-      {/* 2. Modal: Seleccionar Acción (Al darle clic al cuadro rojo) */}
+      {/* Modal: Seleccionar Acción */}
       {actionModal.isOpen && (
         <div className="modal-overlay">
           <div className="modal-action-content">
@@ -417,34 +406,102 @@ export const DashboardAdmin = () => {
             <p className="action-subtitle">¿Qué deseas hacer con este horario?</p>
             
             <div className="schedule-info-box">
-              <div className="info-header">
-                <CalendarIcon /> Datos del horario
-              </div>
-              
-              <div className="info-row">
-                <span>Curso:</span>
-                <strong>{actionModal.data?.curso}</strong>
-              </div>
-              <div className="info-row">
-                <span>Profesor:</span>
-                <strong>{actionModal.data?.profesor}</strong>
-              </div>
-              <div className="info-row">
-                <span>Día:</span>
-                <strong>{actionModal.data?.dia}</strong>
-              </div>
-              <div className="info-row">
-                <span>Hora:</span>
-                <strong>{actionModal.data?.hora}</strong>
-              </div>
+              <div className="info-header"><CalendarIcon /> Datos del horario</div>
+              <div className="info-row"><span>Curso:</span><strong>{actionModal.data?.curso}</strong></div>
+              <div className="info-row"><span>Profesor:</span><strong>{actionModal.data?.profesor}</strong></div>
+              <div className="info-row"><span>Día:</span><strong>{actionModal.data?.dia}</strong></div>
+              <div className="info-row"><span>Hora:</span><strong>{actionModal.data?.hora}</strong></div>
             </div>
 
-            <button className="btn-action-blue" onClick={() => setActionModal({ isOpen: false, data: null })}>
+            {/* AQUI CONECTAMOS LOS NUEVOS BOTONES */}
+            <button className="btn-action-blue" onClick={() => {
+              setEditScheduleModal({ isOpen: true, data: actionModal.data });
+              setActionModal({ isOpen: false, data: null });
+            }}>
               <EditIconWhite /> Modificar horario
             </button>
-            <button className="btn-action-red" onClick={() => setActionModal({ isOpen: false, data: null })}>
+            <button className="btn-action-red" onClick={() => {
+              setDeleteScheduleModal({ isOpen: true, data: actionModal.data });
+              setActionModal({ isOpen: false, data: null });
+            }}>
               <TrashIconRed /> Eliminar horario
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Editar Horario */}
+      {editScheduleModal.isOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content-large" style={{width: '450px'}}>
+            <div className="modal-header">
+              <h3>Editar horario</h3>
+              <button className="close-btn" onClick={() => setEditScheduleModal({ isOpen: false, data: null })}>×</button>
+            </div>
+            
+            <div className="form-group">
+              <label>Profesor*</label>
+              <select className="form-select" defaultValue={editScheduleModal.data?.profesor}>
+                <option value="Diego Salazar">Diego Salazar</option>
+                <option value="Guillermo Corro">Guillermo Corro</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Día*</label>
+              <select className="form-select" defaultValue={editScheduleModal.data?.dia}>
+                <option value="Domingo">Domingo</option>
+                <option value="Lunes">Lunes</option>
+                <option value="Martes">Martes</option>
+                <option value="Miércoles">Miércoles</option>
+                <option value="Jueves">Jueves</option>
+                <option value="Viernes">Viernes</option>
+                <option value="Sábado">Sábado</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Hora*</label>
+              <input type="text" className="form-control" defaultValue={editScheduleModal.data?.hora} />
+            </div>
+            <div className="form-group">
+              <label>Estado*</label>
+              <select className="form-select" defaultValue="Disponible">
+                <option value="Disponible">Disponible</option>
+                <option value="Lleno">Lleno</option>
+              </select>
+            </div>
+            <div className="modal-footer" style={{marginTop: '2rem', paddingTop: '0'}}>
+              <span className="required-text" style={{display: 'block', marginBottom: '1rem', textAlign: 'left', width: '100%'}}>Los campos marcados con (*) son obligatorios</span>
+              <div className="footer-buttons" style={{width: '100%'}}>
+                <button className="btn-cancel" style={{width: '50%'}} onClick={() => setEditScheduleModal({ isOpen: false, data: null })}>Cancelar</button>
+                <button className="btn-confirm-blue" style={{width: '50%'}} onClick={() => setEditScheduleModal({ isOpen: false, data: null })}>Guardar cambios</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Eliminar Horario */}
+      {deleteScheduleModal.isOpen && (
+        <div className="modal-overlay">
+          <div className="modal-delete-content">
+            <img src={alertaIcon} alt="Alerta" className="alert-icon" />
+            <h3 className="delete-title">Eliminar horario</h3>
+            <p className="delete-subtitle">¿Estás seguro de que deseas eliminar este horario? <br/>Esta acción no se puede deshacer.</p>
+            
+            <div className="delete-schedule-details">
+              <div className="info-row"><span>Curso:</span><strong>{deleteScheduleModal.data?.curso}</strong></div>
+              <div className="info-row"><span>Profesor:</span><strong>{deleteScheduleModal.data?.profesor}</strong></div>
+              <div className="info-row"><span>Día:</span><strong>{deleteScheduleModal.data?.dia}</strong></div>
+              <div className="info-row"><span>Hora:</span><strong>{deleteScheduleModal.data?.hora}</strong></div>
+            </div>
+
+            <div className="modal-buttons">
+              <button className="btn-cancel-delete" onClick={() => setDeleteScheduleModal({ isOpen: false, data: null })}>Cancelar</button>
+              <button className="btn-confirm-red" onClick={() => {
+                console.log("Horario eliminado:", deleteScheduleModal.data);
+                setDeleteScheduleModal({ isOpen: false, data: null });
+              }}>Eliminar</button>
+            </div>
           </div>
         </div>
       )}
