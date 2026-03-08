@@ -11,26 +11,29 @@ import logoutIcon from '../assets/logout_icon.svg';
 import hatIcon from '../assets/hat_icon.svg';
 import pencilIcon from '../assets/pencil_icon.svg'; 
 import bookIcon2 from '../assets/book_icon_2.svg';
-import chinaIcon from '../assets/china_icon.svg';
-
-// IMPORTANTE: Aquí importamos tu nuevo ícono de tres puntos
 import menuIcon from '../assets/menu_icon.svg'; 
+import chinaIcon from '../assets/china_icon.svg'; 
 
-// Lista de cursos para dibujar las tarjetas dinámicamente.
-// NOTA: Cuando tengas los SVGs de las demás banderas (ingles_icon.svg, etc)
-// impórtalos arriba y colócalos donde dice "flag: null".
+// === NUEVOS ÍCONOS PARA EL MODAL ===
+import nubeIcon from '../assets/nube.svg';
+import imagenIcon from '../assets/imagen.svg';
+import boteBasuraIcon from '../assets/bote_basura.svg';
+import recargarIcon from '../assets/recargar.svg';
+
 const cursosData = [
-  // 2. Quita las comillas y la ruta de texto, usa la variable chinaIcon
-  { id: 1, nombre: 'Chino', flag: chinaIcon } 
+  
+  { id: 2, nombre: 'Chino', flag: chinaIcon }
+  
 ];
 
 export const DashboardAdmin = () => {
   const [activeView, setActiveView] = useState('main'); 
-  
-  // Ahora guardamos el ID del menú que está abierto (para que no se abran todos a la vez)
   const [openMenuId, setOpenMenuId] = useState(null);
+  
+  // ESTADOS PARA LOS MODALES
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal de cerrar sesión
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false); // NUEVO: Modal de añadir curso
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -38,18 +41,16 @@ export const DashboardAdmin = () => {
     navigate('/');
   };
 
-  // Cierra el menú desplegable al hacer clic en cualquier parte de la pantalla
   const closeDropdown = () => {
     if (openMenuId !== null) setOpenMenuId(null);
   };
 
-  // Abre o cierra el menú de una tarjeta en específico
   const toggleMenu = (e, id) => {
-    e.stopPropagation(); // Evita que se dispare el closeDropdown del contenedor
+    e.stopPropagation();
     setOpenMenuId(openMenuId === id ? null : id);
   };
 
-  // VISTA A: Página Principal (Acciones Rápidas)
+  // VISTA A: Página Principal
   const renderMainContent = () => (
     <>
       <h1 className="dashboard-greeting">Hola ¡Diego!</h1>
@@ -71,42 +72,34 @@ export const DashboardAdmin = () => {
     </>
   );
 
-  // VISTA B: Gestión de Cursos (Tarjetas de Banderas)
+  // VISTA B: Gestión de Cursos
   const renderCoursesContent = () => (
     <>
       <h1 className="dashboard-greeting">Hola ¡Diego!</h1>
       
       <div className="courses-header">
         <span className="courses-subtitle">Cursos:</span>
-        <button className="btn-add">+ Añadir</button>
+        {/* Agregamos el onClick para abrir el nuevo modal */}
+        <button className="btn-add" onClick={() => setIsAddModalOpen(true)}>+ Añadir</button>
       </div>
 
       <div className="courses-grid">
         {cursosData.map((curso) => (
           <div className="course-card-simple" key={curso.id}>
-            
-            {/* Botón de tres puntos con tu SVG */}
             <button className="dots-btn-simple" onClick={(e) => toggleMenu(e, curso.id)}>
               <img src={menuIcon} alt="Opciones" />
             </button>
-
-            {/* Menú Desplegable (Solo se muestra si su ID coincide con el estado) */}
             {openMenuId === curso.id && (
               <div className="dropdown-simple">
                 <button className="dropdown-item-text">Editar</button>
                 <button className="dropdown-item-text">Eliminar</button>
               </div>
             )}
-
-            {/* Imagen de la Bandera */}
             {curso.flag ? (
               <img src={curso.flag} alt={`Bandera ${curso.nombre}`} className="course-flag" />
             ) : (
-              // Un cuadro gris por si aún no tienes importado el SVG de la bandera
               <div className="course-flag" style={{ background: '#cbd5e1' }}></div> 
             )}
-
-            {/* Nombre del idioma */}
             <span className="course-name">{curso.nombre}</span>
           </div>
         ))}
@@ -128,7 +121,6 @@ export const DashboardAdmin = () => {
             <img src={settingsIcon} alt="Usuarios" /> <span>Gestionar Usuarios</span>
           </div>
         </div>
-
         <div className="sidebar-link" onClick={() => setIsModalOpen(true)}>
           <img src={logoutIcon} alt="Salir" /> <span>Cerrar sesión</span>
         </div>
@@ -139,6 +131,7 @@ export const DashboardAdmin = () => {
         {activeView === 'main' ? renderMainContent() : renderCoursesContent()}
       </main>
 
+      {/* === MODAL DE CERRAR SESIÓN === */}
       {isModalOpen && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -151,6 +144,67 @@ export const DashboardAdmin = () => {
           </div>
         </div>
       )}
+
+      {/* === NUEVO MODAL: AÑADIR CURSO === */}
+      {isAddModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content-large">
+            
+            <div className="modal-header">
+              <h3>Añadir Curso</h3>
+              <button className="close-btn" onClick={() => setIsAddModalOpen(false)}>×</button>
+            </div>
+
+            <div className="form-group">
+              <label>Nombre del curso*</label>
+              <input type="text" className="form-control" placeholder="Inglés Intermedio B1" />
+            </div>
+
+            <div className="form-group">
+              <label>Imagen representativa del curso*</label>
+              
+              {/* Caja de subida */}
+              <div className="upload-area">
+                <img src={nubeIcon} alt="Subir" className="nube-icon" />
+                <p>Arrastra y suelta tu imagen aquí<br/>o haz clic para seleccionar</p>
+                <button className="upload-btn">
+                  <img src={imagenIcon} alt="Icono imagen" style={{width: '16px'}} />
+                  Subir imagen
+                </button>
+              </div>
+              <p className="format-text">Formatos aceptados: JPG, PNG.</p>
+
+              {/* Caja de vista previa (tal como en tu diseño) */}
+              <label>Vista previa</label>
+              <div className="preview-area">
+                {/* Cuadro gris simulando la imagen subida */}
+                <div className="preview-thumbnail"></div>
+                <div className="preview-actions">
+                  <button className="action-btn btn-replace">
+                    <img src={recargarIcon} alt="Reemplazar" style={{width: '16px'}} />
+                    Reemplazar
+                  </button>
+                  <button className="action-btn btn-delete">
+                    <img src={boteBasuraIcon} alt="Eliminar" style={{width: '16px'}} />
+                    Eliminar
+                  </button>
+                </div>
+              </div>
+
+            </div>
+
+            <div className="modal-footer">
+              <span className="required-text">Los campos marcados con (*) son obligatorios</span>
+              <div className="footer-buttons">
+                <button className="btn-cancel" onClick={() => setIsAddModalOpen(false)}>Cancelar</button>
+                <button className="btn-confirm-blue" onClick={() => setIsAddModalOpen(false)}>Confirmar</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
