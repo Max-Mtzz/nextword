@@ -45,12 +45,9 @@ const TrashIconRed = () => (
 );
 
 const cursosData = [
-  { id: 1, nombre: 'Inglés', flag: null },
-  { id: 2, nombre: 'Chino', flag: chinaIcon },
-  { id: 3, nombre: 'Portugués', flag: null },
-  { id: 4, nombre: 'Alemán', flag: null },
-  { id: 5, nombre: 'Japonés', flag: null },
-  { id: 6, nombre: 'Coreano', flag: null },
+
+  { id: 2, nombre: 'Chino', flag: chinaIcon }
+ 
 ];
 
 const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
