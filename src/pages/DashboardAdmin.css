@@ -906,3 +906,172 @@
   margin-bottom: 2rem;
   text-align: left;
 }
+
+/* ========================================= */
+/* === VISTA DE GESTIÓN DE USUARIOS === */
+/* ========================================= */
+
+/* Barra de filtros superior */
+.users-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap; /* Por si la pantalla es pequeña */
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.filter-group select {
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #1f2937;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-filter {
+  background-color: #0082a9;
+  color: white;
+  padding: 0.5rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-filter:hover {
+  background-color: #006685;
+}
+
+/* Contenedor de la tabla */
+.table-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+  border: 1px solid #f3f4f6;
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.data-table th {
+  background-color: #f8fafc;
+  padding: 1rem 1.5rem;
+  font-size: 0.85rem;
+  color: #4b5563;
+  font-weight: bold;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.data-table td {
+  padding: 1rem 1.5rem;
+  font-size: 0.9rem;
+  color: #1f2937;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+/* Quitar el borde de la última fila */
+.data-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Iconos de acción dentro de la tabla (Ver, Editar, Eliminar) */
+.table-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.action-icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s;
+}
+
+.action-icon-btn:hover {
+  transform: scale(1.1); /* Efecto de crecimiento al pasar el mouse */
+}
+
+.action-icon-btn img {
+  width: 18px;
+  height: 18px;
+}
+
+/* ========================================= */
+/* === FORMULARIOS DE USUARIOS (ALUMNOS/MAESTROS) === */
+/* ========================================= */
+
+/* Contenedor para poner dos inputs en la misma fila */
+.form-row {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.2rem;
+}
+
+.form-row .form-group {
+  flex: 1;
+  margin-bottom: 0; /* Quitamos el margen porque ya lo da el form-row */
+}
+
+/* Estado de input válido (Verde) */
+.input-success {
+  border-color: #10b981 !important;
+  background-color: #f0fdf4 !important;
+  color: #065f46;
+  background-image: url('data:image/svg+xml;utf8,<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 6L9 17L4 12" stroke="%2310b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+  background-repeat: no-repeat;
+  background-position: left 10px center;
+  padding-left: 2.2rem !important; /* Espacio para la palomita */
+}
+
+/* Estado de input inválido (Rojo) */
+.input-error {
+  border-color: #ef4444 !important;
+  background-color: #fef2f2 !important;
+  color: #b91c1c;
+}
+
+/* Texto pequeñito de error debajo del input */
+.error-text-small {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #ef4444;
+  font-size: 0.75rem;
+  margin-top: 0.4rem;
+  font-weight: bold;
+}
+
+/* Caja de detalles al eliminar un usuario */
+.delete-user-details {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  text-align: left;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+}
