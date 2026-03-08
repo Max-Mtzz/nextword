@@ -739,7 +739,7 @@
 .cal-cell {
   border-right: 1px solid #e5e7eb;
   border-bottom: 1px solid #e5e7eb;
-  min-height: 70px;
+  min-height: 100px; /* <--- Sube este número para hacer las celdas más altas */
   padding: 4px;
   position: relative;
   transition: background 0.2s;
