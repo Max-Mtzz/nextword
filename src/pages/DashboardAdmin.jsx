@@ -157,7 +157,7 @@ export const DashboardAdmin = () => {
 
             <div className="form-group">
               <label>Nombre del curso*</label>
-              <input type="text" className="form-control" placeholder="Inglés Intermedio B1" />
+              <input type="text" className="form-control" placeholder="Nombre del curso" />
             </div>
 
             <div className="form-group">
