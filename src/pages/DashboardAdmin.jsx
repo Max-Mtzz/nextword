@@ -257,7 +257,7 @@ export const DashboardAdmin = () => {
                   <input 
                     type="password" 
                     className="form-control" 
-                    placeholder="........"
+                    placeholder="Ingresa tu contraseña"
                     value={deletePassword}
                     onChange={(e) => {
                       setDeletePassword(e.target.value);
