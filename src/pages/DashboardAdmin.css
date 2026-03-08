@@ -1025,15 +1025,21 @@
 /* ========================================= */
 
 /* Contenedor para poner dos inputs en la misma fila */
+
+.form-group {
+  margin-bottom: 2rem; /* Separación vertical aumentada */
+}
+
+/* Contenedor para poner dos inputs en la misma fila */
 .form-row {
   display: flex;
-  gap: 1.5rem;
-  margin-bottom: 1.2rem;
+  gap: 3.5rem; /* Aumentamos bastante la separación horizontal */
+  margin-bottom: 2rem; 
 }
 
 .form-row .form-group {
   flex: 1;
-  margin-bottom: 0; /* Quitamos el margen porque ya lo da el form-row */
+  margin-bottom: 0; 
 }
 
 /* Estado de input válido (Verde) */

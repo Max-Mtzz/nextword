@@ -19,7 +19,6 @@ import boteBasuraIcon from '../assets/bote_basura.svg';
 import recargarIcon from '../assets/recargar.svg';
 import alertaIcon from '../assets/alerta.svg';
 import lapizIcon from '../assets/lapiz.svg';
-import ojoIcon from '../assets/ojo.svg';
 
 // SVGs en línea
 const CalendarIcon = () => (
@@ -210,7 +209,7 @@ export const DashboardAdmin = () => {
     </>
   );
 
-  // VISTA E: LISTA DE ALUMNOS
+  // VISTA E: LISTA DE ALUMNOS (FILTROS ELIMINADOS)
   const renderStudentsListContent = () => (
     <>
       <div className="calendar-top-bar">
@@ -219,12 +218,8 @@ export const DashboardAdmin = () => {
           <div className="calendar-title-container" style={{marginBottom: '1.5rem'}}>
             <h2>Alumnos - Usuarios registrados</h2>
           </div>
-          <div className="users-filter-bar">
-            <div className="filter-group"><label>Alumno:</label><select><option>Todos</option></select></div>
-            <div className="filter-group"><label>Edad:</label><select><option></option></select></div>
-            <div className="filter-group"><label>Estado:</label><select><option>Todos</option></select></div>
-            <button className="btn-filter">Filtrar</button>
-          </div>
+          
+          {/* Botón Añadir directamente debajo del título */}
           <button className="btn-add" onClick={() => setUserForm({ isOpen: true, type: 'alumno', mode: 'add', data: null })}>+ Añadir</button>
         </div>
         <button className="btn-back" onClick={() => setActiveView('users')} style={{flexShrink: 0}}>{'<'} Atrás</button>
@@ -242,7 +237,6 @@ export const DashboardAdmin = () => {
                     <button className="action-icon-btn" onClick={() => setUserForm({ isOpen: true, type: 'alumno', mode: 'edit', data: alumno })}>
                       <img src={lapizIcon} alt="Editar" />
                     </button>
-                    <button className="action-icon-btn"><img src={ojoIcon} alt="Ver" /></button>
                     <button className="action-icon-btn" onClick={() => { setDeletePassword(''); setDeleteError(false); setDeleteUser({ isOpen: true, step: 1, type: 'alumno', data: alumno }); }}>
                       <img src={boteBasuraIcon} alt="Eliminar" />
                     </button>
@@ -256,7 +250,7 @@ export const DashboardAdmin = () => {
     </>
   );
 
-  // VISTA F: LISTA DE MAESTROS
+  // VISTA F: LISTA DE MAESTROS (FILTROS ELIMINADOS)
   const renderTeachersListContent = () => (
     <>
       <div className="calendar-top-bar">
@@ -265,11 +259,8 @@ export const DashboardAdmin = () => {
           <div className="calendar-title-container" style={{marginBottom: '1.5rem'}}>
             <h2>Maestros - Usuarios registrados</h2>
           </div>
-          <div className="users-filter-bar">
-            <div className="filter-group"><label>Maestro:</label><select><option>Todos</option></select></div>
-            <div className="filter-group"><label>Estado:</label><select><option>Todos</option></select></div>
-            <button className="btn-filter">Filtrar</button>
-          </div>
+          
+          {/* Botón Añadir directamente debajo del título */}
           <button className="btn-add" onClick={() => setUserForm({ isOpen: true, type: 'maestro', mode: 'add', data: null })}>+ Añadir</button>
         </div>
         <button className="btn-back" onClick={() => setActiveView('users')} style={{flexShrink: 0}}>{'<'} Atrás</button>
@@ -287,7 +278,6 @@ export const DashboardAdmin = () => {
                     <button className="action-icon-btn" onClick={() => setUserForm({ isOpen: true, type: 'maestro', mode: 'edit', data: maestro })}>
                       <img src={lapizIcon} alt="Editar" />
                     </button>
-                    <button className="action-icon-btn"><img src={ojoIcon} alt="Ver" /></button>
                     <button className="action-icon-btn" onClick={() => { setDeletePassword(''); setDeleteError(false); setDeleteUser({ isOpen: true, step: 1, type: 'maestro', data: maestro }); }}>
                       <img src={boteBasuraIcon} alt="Eliminar" />
                     </button>
@@ -484,12 +474,11 @@ export const DashboardAdmin = () => {
       )}
 
       {/* ========================================================= */}
-      {/* === NUEVOS MODALES: GESTIÓN DE USUARIOS ACTUALIZADOS === */}
+      {/* === MODALES: GESTIÓN DE USUARIOS === */}
       {/* ========================================================= */}
       
       {userForm.isOpen && (
         <div className="modal-overlay">
-          {/* Si es maestro lo hacemos un poco más ancho (700px) para que quepan las 3 columnas cómodamente */}
           <div className="modal-content-large" style={{width: userForm.type === 'maestro' ? '700px' : '600px'}}>
             <div className="modal-header">
               <h3>{userForm.mode === 'add' ? 'Añadir' : 'Editar'} {userForm.type}</h3>
@@ -507,7 +496,6 @@ export const DashboardAdmin = () => {
               </div>
             </div>
 
-            {/* Renderizado condicional de la fila del medio */}
             {userForm.type === 'maestro' ? (
               <div className="form-row">
                 <div className="form-group">
@@ -519,7 +507,6 @@ export const DashboardAdmin = () => {
                   <input type="text" className="form-control input-error" defaultValue="+52 55 1234" />
                   <span className="error-text-small"><ExclamationIconSmall /> Formato inválido. Debe contener 10 dígitos</span>
                 </div>
-                {/* Nuevo campo de Contraseña para Maestro en la misma fila */}
                 <div className="form-group">
                   <label>Contraseña*</label>
                   <input type="password" className="form-control" placeholder="Ingrese una contraseña" />
@@ -539,7 +526,6 @@ export const DashboardAdmin = () => {
               </div>
             )}
 
-            {/* Campos exclusivos para ALUMNOS */}
             {userForm.type === 'alumno' && (
               <>
                 <div className="form-row">
@@ -559,7 +545,6 @@ export const DashboardAdmin = () => {
                       <option>Selecciona una opción</option>
                     </select>
                   </div>
-                  {/* Nuevo campo de Contraseña para Alumno al lado del Género */}
                   <div className="form-group">
                     <label>Contraseña*</label>
                     <input type="password" className="form-control" placeholder="Ingresa una contraseña" />
@@ -568,7 +553,6 @@ export const DashboardAdmin = () => {
               </>
             )}
 
-            {/* Campos exclusivos para MAESTROS */}
             {userForm.type === 'maestro' && (
               <div className="form-group">
                 <label>Curso que imparte*</label>
