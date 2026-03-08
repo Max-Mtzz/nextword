@@ -65,16 +65,18 @@ export const DashboardAdmin = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false); 
   const [deleteModal, setDeleteModal] = useState({ isOpen: false, step: 1, courseId: null });
+  
+  // Estado compartido para la contraseña de eliminación (cursos y horarios)
   const [deletePassword, setDeletePassword] = useState('');
   const [deleteError, setDeleteError] = useState(false);
 
   // ESTADOS MODALES DE CALENDARIO
   const [isAddScheduleModalOpen, setIsAddScheduleModalOpen] = useState(false);
   const [actionModal, setActionModal] = useState({ isOpen: false, data: null });
-  
-  // === NUEVOS ESTADOS === (Editar y Eliminar Horario)
   const [editScheduleModal, setEditScheduleModal] = useState({ isOpen: false, data: null });
-  const [deleteScheduleModal, setDeleteScheduleModal] = useState({ isOpen: false, data: null });
+  
+  // === ACTUALIZADO: Estado de eliminar horario ahora incluye "step" ===
+  const [deleteScheduleModal, setDeleteScheduleModal] = useState({ isOpen: false, step: 1, data: null });
 
   const navigate = useNavigate();
 
@@ -142,6 +144,8 @@ export const DashboardAdmin = () => {
                 <button className="dropdown-item-text" onClick={(e) => { 
                   e.stopPropagation(); 
                   setOpenMenuId(null);
+                  setDeletePassword('');
+                  setDeleteError(false);
                   setDeleteModal({ isOpen: true, step: 1, courseId: curso.id });
                 }}>Eliminar</button>
               </div>
@@ -256,7 +260,6 @@ export const DashboardAdmin = () => {
         </div>
       )}
 
-      {/* Modal Añadir Curso se mantiene oculto para no alargar el bloque de código visualmente, pero sigue en el DOM de React como antes */}
       {isAddModalOpen && (
         <div className="modal-overlay">
           <div className="modal-content-large">
@@ -302,6 +305,7 @@ export const DashboardAdmin = () => {
         </div>
       )}
 
+      {/* Modal: Eliminar Curso */}
       {deleteModal.isOpen && (
         <div className="modal-overlay">
           <div className="modal-delete-content">
@@ -348,7 +352,6 @@ export const DashboardAdmin = () => {
       {/* MODALES DE HORARIOS Y CALENDARIO */}
       {/* ========================================================= */}
       
-      {/* Modal: Añadir Horario */}
       {isAddScheduleModalOpen && (
         <div className="modal-overlay">
           <div className="modal-content-large" style={{width: '450px'}}>
@@ -394,7 +397,6 @@ export const DashboardAdmin = () => {
         </div>
       )}
 
-      {/* Modal: Seleccionar Acción */}
       {actionModal.isOpen && (
         <div className="modal-overlay">
           <div className="modal-action-content">
@@ -413,15 +415,18 @@ export const DashboardAdmin = () => {
               <div className="info-row"><span>Hora:</span><strong>{actionModal.data?.hora}</strong></div>
             </div>
 
-            {/* AQUI CONECTAMOS LOS NUEVOS BOTONES */}
             <button className="btn-action-blue" onClick={() => {
               setEditScheduleModal({ isOpen: true, data: actionModal.data });
               setActionModal({ isOpen: false, data: null });
             }}>
               <EditIconWhite /> Modificar horario
             </button>
+            
+            {/* AQUÍ PREPARAMOS LA ELIMINACIÓN DE HORARIO PARA QUE EMPIECE EN EL PASO 1 Y LIMPIE LA CONTRASEÑA */}
             <button className="btn-action-red" onClick={() => {
-              setDeleteScheduleModal({ isOpen: true, data: actionModal.data });
+              setDeletePassword('');
+              setDeleteError(false);
+              setDeleteScheduleModal({ isOpen: true, step: 1, data: actionModal.data });
               setActionModal({ isOpen: false, data: null });
             }}>
               <TrashIconRed /> Eliminar horario
@@ -430,7 +435,6 @@ export const DashboardAdmin = () => {
         </div>
       )}
 
-      {/* Modal: Editar Horario */}
       {editScheduleModal.isOpen && (
         <div className="modal-overlay">
           <div className="modal-content-large" style={{width: '450px'}}>
@@ -480,28 +484,64 @@ export const DashboardAdmin = () => {
         </div>
       )}
 
-      {/* Modal: Eliminar Horario */}
+      {/* === ACTUALIZADO: Modal Eliminar Horario ahora con 2 pasos === */}
       {deleteScheduleModal.isOpen && (
         <div className="modal-overlay">
           <div className="modal-delete-content">
-            <img src={alertaIcon} alt="Alerta" className="alert-icon" />
-            <h3 className="delete-title">Eliminar horario</h3>
-            <p className="delete-subtitle">¿Estás seguro de que deseas eliminar este horario? <br/>Esta acción no se puede deshacer.</p>
             
-            <div className="delete-schedule-details">
-              <div className="info-row"><span>Curso:</span><strong>{deleteScheduleModal.data?.curso}</strong></div>
-              <div className="info-row"><span>Profesor:</span><strong>{deleteScheduleModal.data?.profesor}</strong></div>
-              <div className="info-row"><span>Día:</span><strong>{deleteScheduleModal.data?.dia}</strong></div>
-              <div className="info-row"><span>Hora:</span><strong>{deleteScheduleModal.data?.hora}</strong></div>
-            </div>
+            {/* PASO 1: Advertencia y detalles del horario */}
+            {deleteScheduleModal.step === 1 && (
+              <>
+                <img src={alertaIcon} alt="Alerta" className="alert-icon" />
+                <h3 className="delete-title">Eliminar horario</h3>
+                <p className="delete-subtitle">¿Estás seguro de que deseas eliminar este horario? <br/>Esta acción no se puede deshacer.</p>
+                
+                <div className="delete-schedule-details">
+                  <div className="info-row"><span>Curso:</span><strong>{deleteScheduleModal.data?.curso}</strong></div>
+                  <div className="info-row"><span>Profesor:</span><strong>{deleteScheduleModal.data?.profesor}</strong></div>
+                  <div className="info-row"><span>Día:</span><strong>{deleteScheduleModal.data?.dia}</strong></div>
+                  <div className="info-row"><span>Hora:</span><strong>{deleteScheduleModal.data?.hora}</strong></div>
+                </div>
 
-            <div className="modal-buttons">
-              <button className="btn-cancel-delete" onClick={() => setDeleteScheduleModal({ isOpen: false, data: null })}>Cancelar</button>
-              <button className="btn-confirm-red" onClick={() => {
-                console.log("Horario eliminado:", deleteScheduleModal.data);
-                setDeleteScheduleModal({ isOpen: false, data: null });
-              }}>Eliminar</button>
-            </div>
+                <div className="modal-buttons">
+                  <button className="btn-cancel-delete" onClick={() => setDeleteScheduleModal({ isOpen: false, step: 1, data: null })}>Cancelar</button>
+                  <button className="btn-confirm-red" onClick={() => setDeleteScheduleModal({ ...deleteScheduleModal, step: 2 })}>Eliminar</button>
+                </div>
+              </>
+            )}
+
+            {/* PASO 2: Confirmación con contraseña */}
+            {deleteScheduleModal.step === 2 && (
+              <>
+                <h3 className="delete-title">Confirmar eliminación</h3>
+                <p className="delete-subtitle">Por favor, ingresa tu contraseña para confirmar esta acción.</p>
+                
+                <div className="password-group">
+                  <label>Contraseña*</label>
+                  <input 
+                    type="password" 
+                    className="form-control" 
+                    placeholder="........" 
+                    value={deletePassword} 
+                    onChange={(e) => { setDeletePassword(e.target.value); setDeleteError(false); }} 
+                  />
+                  {deleteError && (
+                    <div className="error-msg-box"><img src={alertaIcon} alt="Error" /> Contraseña incorrecta. Intenta nuevamente.</div>
+                  )}
+                </div>
+
+                <div className="modal-buttons" style={{marginTop: '2rem'}}>
+                  <button className="btn-cancel-delete" onClick={() => setDeleteScheduleModal({ isOpen: false, step: 1, data: null })}>Cancelar</button>
+                  <button className="btn-confirm-red" onClick={() => {
+                    // Contraseña de prueba: 1234
+                    if (deletePassword !== '1234') { setDeleteError(true); return; }
+                    console.log("Horario eliminado exitosamente:", deleteScheduleModal.data);
+                    setDeleteScheduleModal({ isOpen: false, step: 1, data: null });
+                  }}>Confirmar<br/>eliminación</button>
+                </div>
+              </>
+            )}
+
           </div>
         </div>
       )}
