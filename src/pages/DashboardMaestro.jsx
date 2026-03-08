@@ -157,10 +157,6 @@ export const DashboardMaestro = () => {
           
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
             <button className="btn-add" onClick={() => setIsAddScheduleModalOpen(true)}>+ Añadir</button>
-            <div className="month-selector">
-              <strong>Abril - 2026</strong> 
-              <div className="month-arrows"><span>{'<'}</span> <span>{'>'}</span></div>
-            </div>
           </div>
         </div>
         <button className="btn-back" onClick={goBackToCourses} style={{flexShrink: 0}}>{'<'} Atrás</button>
