@@ -25,9 +25,13 @@ const cursosData = [
   
 ];
 
+const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+const horasDia = ['8 AM', '9 AM', '10 AM', '11 AM', '12 PM', '1 PM', '2 PM', '3 PM'];
+
 export const DashboardAdmin = () => {
   const [activeView, setActiveView] = useState('main'); 
   const [openMenuId, setOpenMenuId] = useState(null);
+  const [selectedCourse, setSelectedCourse] = useState(null);
   
   // ESTADOS MODALES
   const [isModalOpen, setIsModalOpen] = useState(false); 
@@ -52,6 +56,16 @@ export const DashboardAdmin = () => {
   const toggleMenu = (e, id) => {
     e.stopPropagation();
     setOpenMenuId(openMenuId === id ? null : id);
+  };
+
+  const openCalendarView = (curso) => {
+    setSelectedCourse(curso);
+    setActiveView('calendar');
+  };
+
+  const goBackToCourses = () => {
+    setActiveView('courses');
+    setSelectedCourse(null);
   };
 
   // FUNCIONES PARA ELIMINAR
@@ -88,16 +102,13 @@ export const DashboardAdmin = () => {
       <h2 className="section-title">Acciones Rápidas</h2>
       <div className="quick-actions">
         <div className="action-card">
-          <img src={hatIcon} alt="Alumnos" />
-          <span>Alumnos</span>
+          <img src={hatIcon} alt="Alumnos" /><span>Alumnos</span>
         </div>
         <div className="action-card">
-          <img src={pencilIcon} alt="Maestros" />
-          <span>Maestros</span>
+          <img src={pencilIcon} alt="Maestros" /><span>Maestros</span>
         </div>
         <div className="action-card" onClick={() => setActiveView('courses')}>
-          <img src={bookIcon2} alt="Cursos" />
-          <span>Cursos</span>
+          <img src={bookIcon2} alt="Cursos" /><span>Cursos</span>
         </div>
       </div>
     </>
@@ -107,7 +118,6 @@ export const DashboardAdmin = () => {
   const renderCoursesContent = () => (
     <>
       <h1 className="dashboard-greeting">Hola ¡Diego!</h1>
-      
       <div className="courses-header">
         <span className="courses-subtitle">Cursos:</span>
         <button className="btn-add" onClick={() => setIsAddModalOpen(true)}>+ Añadir</button>
@@ -115,16 +125,19 @@ export const DashboardAdmin = () => {
 
       <div className="courses-grid">
         {cursosData.map((curso) => (
-          <div className="course-card-simple" key={curso.id}>
+          <div className="course-card-simple" key={curso.id} onClick={() => openCalendarView(curso)}>
+            
             <button className="dots-btn-simple" onClick={(e) => toggleMenu(e, curso.id)}>
               <img src={menuIcon} alt="Opciones" />
             </button>
+            
             {openMenuId === curso.id && (
               <div className="dropdown-simple">
-                <button className="dropdown-item-text">Editar</button>
-                <button className="dropdown-item-text" onClick={() => openDeleteFlow(curso.id)}>Eliminar</button>
+                <button className="dropdown-item-text" onClick={(e) => e.stopPropagation()}>Editar</button>
+                <button className="dropdown-item-text" onClick={(e) => { e.stopPropagation(); openDeleteFlow(curso.id); }}>Eliminar</button>
               </div>
             )}
+            
             {curso.flag ? (
               <img src={curso.flag} alt={`Bandera ${curso.nombre}`} className="course-flag" />
             ) : (
@@ -137,6 +150,58 @@ export const DashboardAdmin = () => {
     </>
   );
 
+  // VISTA C: CALENDARIO
+  const renderCalendarContent = () => (
+    <>
+      <div className="calendar-top-bar">
+        <div>
+          <div className="breadcrumbs">
+            Gestionar cursos {'>'} Idiomas {'>'} <strong>{selectedCourse?.nombre}</strong>
+          </div>
+          <div className="calendar-title-container">
+            <h2>{selectedCourse?.nombre} - Horarios disponibles</h2>
+            {selectedCourse?.flag && <img src={selectedCourse.flag} alt="Bandera" className="calendar-title-flag" />}
+          </div>
+          <button className="btn-add" style={{marginTop: '1.5rem'}}>+ Añadir</button>
+        </div>
+        
+        <button className="btn-back" onClick={goBackToCourses}>
+          {'<'} Atrás
+        </button>
+      </div>
+
+      <div className="calendar-wrapper">
+        <div className="calendar-grid">
+          <div className="cal-header-cell" style={{background: 'white', borderBottom: 'none'}}></div>
+          {diasSemana.map((dia) => (
+            <div className="cal-header-cell" key={dia}>{dia}</div>
+          ))}
+
+          {horasDia.map((hora) => (
+            <React.Fragment key={hora}>
+              <div className="cal-time-cell">{hora}</div>
+              {diasSemana.map((dia) => {
+                const isEvent = dia === 'Domingo' && hora === '8 AM';
+                return (
+                  <div className="cal-cell" key={`${hora}-${dia}`}>
+                    {isEvent && (
+                      <div 
+                        className="cal-event-block" 
+                        onClick={() => alert(`Próximamente abriremos el detalle de la clase de ${selectedCourse?.nombre} el ${dia} a las ${hora}.`)}
+                      >
+                        8 AM - 9 AM
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+
   return (
     <div className="dashboard-container" onClick={closeDropdown}>
       <aside className="sidebar">
@@ -144,7 +209,7 @@ export const DashboardAdmin = () => {
           <div className={`sidebar-link ${activeView === 'main' ? 'active' : ''}`} onClick={() => setActiveView('main')}>
             <img src={homeIcon} alt="Inicio" /> <span>Página principal</span>
           </div>
-          <div className={`sidebar-link ${activeView === 'courses' ? 'active' : ''}`} onClick={() => setActiveView('courses')}>
+          <div className={`sidebar-link ${(activeView === 'courses' || activeView === 'calendar') ? 'active' : ''}`} onClick={goBackToCourses}>
             <img src={bookIcon} alt="Cursos" /> <span>Gestionar Cursos</span>
           </div>
           <div className="sidebar-link">
@@ -158,7 +223,10 @@ export const DashboardAdmin = () => {
 
       <main className="dashboard-content">
         <img src={nextWordLogo} alt="NextWord Logo" className="dashboard-content-logo" />
-        {activeView === 'main' ? renderMainContent() : renderCoursesContent()}
+        
+        {activeView === 'main' && renderMainContent()}
+        {activeView === 'courses' && renderCoursesContent()}
+        {activeView === 'calendar' && renderCalendarContent()}
       </main>
 
       {/* === MODAL DE CERRAR SESIÓN === */}
@@ -257,7 +325,7 @@ export const DashboardAdmin = () => {
                   <input 
                     type="password" 
                     className="form-control" 
-                    placeholder="Ingresa tu contraseña"
+                    placeholder="........"
                     value={deletePassword}
                     onChange={(e) => {
                       setDeletePassword(e.target.value);
