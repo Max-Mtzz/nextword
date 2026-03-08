@@ -17,7 +17,7 @@ export const Login = () => {
     e.preventDefault();
     console.log("Datos a enviar:", formData);
     // ¡Aquí hacemos la magia de enviarte al dashboard!
-    navigate('/dashboard'); 
+    navigate('/dashboard-maestro'); 
   };
 
   return (
