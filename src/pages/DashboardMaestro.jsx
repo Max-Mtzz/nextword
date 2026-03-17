@@ -75,6 +75,7 @@ export const DashboardMaestro = () => {
         subtitle="Esta acción cerrara la sesión actual"
         onConfirm={() => console.log("Cerrando sesión...")}
         onCancel={() => setIsLogoutModalOpen(false)}
+        isDestructive={true}
       />
 
       <ModalAñadirHorario 

@@ -1,4 +1,5 @@
 import React from 'react';
+import './ConfirmModal.css';
 
 export const ConfirmModal = ({ isOpen, title, subtitle, confirmText = "Confirmar", onConfirm, onCancel, isDestructive = false }) => {
   if (!isOpen) return null;
@@ -10,9 +11,13 @@ export const ConfirmModal = ({ isOpen, title, subtitle, confirmText = "Confirmar
         {subtitle && <p>{subtitle}</p>}
         
         <div className="modal-buttons">
-          <button className="btn-cancel" onClick={onCancel}>Cancelar</button>
+          <button className="btn-cancel" onClick={onCancel}>
+            Cancelar
+          </button>
+          
+          {/* AQUÍ ESTÁ LA MAGIA DEL COLOR */}
           <button 
-            className={isDestructive ? "btn-confirm-red" : "btn-confirm"} 
+            className={isDestructive ? "btn-confirm-red" : "btn-confirm-blue"} 
             onClick={onConfirm}
           >
             {confirmText}

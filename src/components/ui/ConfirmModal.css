@@ -1,0 +1,91 @@
+/* Fondo oscuro que tapa toda la pantalla */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(0, 0, 0, 0.4); 
+  z-index: 9999; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* La tarjeta blanca */
+.modal-content {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 12px;
+  text-align: center;
+  width: 400px;
+  max-width: 90vw;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content h3 {
+  color: #1f2937;
+  font-size: 1.3rem;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.modal-content p {
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Fila de botones */
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem; /* Separación entre el texto y los botones */
+}
+
+/* Botón Blanco (Cancelar) */
+.btn-cancel {
+  flex: 1; 
+  padding: 0.75rem 1rem;
+  border: 1px solid #e5e7eb;
+  background: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  color: #6b7280;
+  font-size: 0.95rem;
+  transition: background 0.2s;
+}
+
+.btn-cancel:hover { background: #f9fafb; }
+
+/* Botón Rojo (Cerrar sesión / Eliminar) */
+.btn-confirm-red {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: #b91c1c; 
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.95rem;
+  transition: filter 0.2s;
+}
+
+.btn-confirm-red:hover { filter: brightness(0.9); }
+
+/* Botón Azul (Acciones positivas) */
+.btn-confirm-blue {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: #0082a9; 
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.95rem;
+  transition: filter 0.2s;
+}
+
+.btn-confirm-blue:hover { filter: brightness(0.9); }
