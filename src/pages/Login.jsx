@@ -1,67 +1,65 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthLayout } from '../layouts/AuthLayout';
-import '../components/FloatingBubbles.css'; 
-import './Login.css'; // ¡Importamos el nuevo CSS!
-import { Link , useNavigate} from 'react-router-dom';
+import { FloatingBubbles } from '../components/ui/FloatingBubbles';
+import { InputField } from '../components/ui/InputField';
+import { PrimaryButton } from '../components/ui/PrimaryButton';
+import './Login.css'; // Aquí ya solo dejas el CSS de .login-card y .login-title
 
 export const Login = () => {
   const [formData, setFormData] = useState({ usuario: '', password: '' });
-  const navigate = useNavigate(); // Inicializamos el hook aquí
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Datos a enviar:", formData);
-    // ¡Aquí hacemos la magia de enviarte al dashboard!
+    console.log("Datos a enviar a Spring Boot:", formData);
+    
+    // Aquí irá tu lógica de conexión al backend en el futuro. Ejemplo:
+    // try {
+    //   const response = await loginService(formData);
+    //   navigate('/dashboard-maestro');
+    // } catch (error) { ... }
+    
     navigate('/dashboard-maestro'); 
   };
 
   return (
     <AuthLayout>
-      {/* Burbujas flotantes con los idiomas de tu diseño */}
-      <div className="floating-bubble bubble-1">Hi</div>
-      <div className="floating-bubble bubble-2">Olá</div>
-      <div className="floating-bubble bubble-3">안녕하세요</div>
-      <div className="floating-bubble bubble-4">你好</div>
-      <div className="floating-bubble bubble-5">Hola</div>
-      <div className="floating-bubble bubble-6">こんにちは</div>
+      <FloatingBubbles />
 
-      {/* Tarjeta de Login ya con sus clases correctas */}
       <div className="login-card">
         <h2 className="login-title">INICIA SESIÓN</h2>
         
         <form onSubmit={handleSubmit} className="login-form">
-          <div className="input-group">
-            <label>Usuario</label>
-            <input 
-              type="text" 
-              name="usuario"
-              placeholder="Ingresa tu usuario" 
-              onChange={handleInputChange}
-            />
-          </div>
+          <InputField 
+            label="Usuario"
+            name="usuario"
+            value={formData.usuario}
+            placeholder="Ingresa tu usuario"
+            onChange={handleInputChange}
+          />
           
-          <div className="input-group">
-            <label>Contraseña</label>
-            <input 
-              type="password" 
-              name="password"
-              placeholder="Ingresa tu contraseña" 
-              onChange={handleInputChange}
-            />
-          </div>
+          <InputField 
+            label="Contraseña"
+            type="password"
+            name="password"
+            value={formData.password}
+            placeholder="Ingresa tu contraseña"
+            onChange={handleInputChange}
+          />
 
           <Link to="/recuperar" className="forgot-password">
-        ¿Olvidaste tu contraseña?
-        </Link>
+            ¿Olvidaste tu contraseña?
+          </Link>
 
-          <button type="submit" className="login-button">
+          <PrimaryButton type="submit">
             INICIAR SESIÓN
-          </button>
+          </PrimaryButton>
         </form>
       </div>
     </AuthLayout>

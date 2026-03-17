@@ -1,209 +1,4 @@
-/* Contenedor principal usando el mismo fondo de olas */
-.dashboard-container {
-  position: fixed;
-  top: 0; left: 0; width: 100vw; height: 100vh;
-  background-color: #f8f9fa;
-  background-image: url('../assets/WAVES 1.svg');
-  background-size: cover; 
-  background-position: center;
-  display: flex;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  overflow: hidden;
-}
-
-/* Barra lateral izquierda */
-.sidebar {
-  width: 80px; /* Tamaño pequeño por defecto */
-  background-color: rgba(248, 249, 250, 0.85);
-  backdrop-filter: blur(5px);
-  display: flex;
-  flex-direction: column;
-  padding: 2rem 0; /* Quitamos padding a los lados para poder centrar bien */
-  box-shadow: 2px 0 10px rgba(0,0,0,0.05);
-  z-index: 20;
-  transition: width 0.3s ease; /* Esto hace la animación suave */
-  overflow: hidden; /* Oculta lo que se salga de los 80px */
-  white-space: nowrap; /* Evita que el texto baje a otra línea */
-}
-
-/* 2. La barra lateral expandida al pasar el mouse */
-.sidebar:hover {
-  width: 260px; /* Crece al pasar el mouse */
-}
-
-
-.sidebar-menu {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.sidebar-link {
-  display: flex;
-  align-items: center;
-  padding: 0.8rem 1.5rem; /* Acomoda el icono exactamente en el centro de los 80px */
-  color: #0082a9;
-  text-decoration: none;
-  font-weight: bold;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.2s;
-  font-size: 0.95rem;
-  width: 260px; /* Obliga al enlace a medir lo de la barra abierta */
-  box-sizing: border-box;
-}
-
-.sidebar-link:hover, .sidebar-link.active {
-  background: rgba(0, 130, 169, 0.1);
-}
-
-/* 5. Los iconos */
-.sidebar-link img {
-  width: 24px; 
-  height: 24px; 
-  min-width: 24px; /* Súper importante: evita que el ícono se encoja cuando la barra se hace chiquita */
-  margin-right: 1.2rem;
-}
-
-/* 6. Animación del texto para que desaparezca suavemente */
-.sidebar-link span {
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-.sidebar:hover .sidebar-link span {
-  opacity: 1; /* El texto aparece cuando la barra está abierta */
-  transition-delay: 0.1s; /* Espera un poquito a que la barra abra antes de mostrar texto */
-}
-
-/* Contenido principal derecho */
-.dashboard-content {
-  flex: 1;
-  padding: 2.5rem 4rem;
-  display: flex;
-  flex-direction: column;
-  z-index: 5;
-}
-
-
-.dashboard-greeting {
-  font-size: 1.5rem;
-  color: #1f2937;
-  font-weight: bold;
-  margin-bottom: 2rem;
-}
-
-.section-title {
-  color: #6b7280;
-  font-weight: bold;
-  font-size: 1rem;
-  margin-bottom: 1rem;
-}
-
-/* Tarjetas de Acciones Rápidas */
-.quick-actions {
-  display: flex;
-  gap: 1.5rem;
-}
-
-.action-card {
-  background: white;
-  border-radius: 12px;
-  padding: 1.5rem;
-  width: 130px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-  cursor: pointer;
-  border: 1px solid #f3f4f6;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.action-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 15px rgba(0,0,0,0.1);
-}
-
-.action-card img {
-  width: 45px; height: 45px; margin-bottom: 0.8rem;
-}
-
-.action-card span {
-  color: #0082a9;
-  font-weight: bold;
-  font-size: 0.95rem;
-}
-
-/* === MODAL DE CERRAR SESIÓN === */
-.modal-overlay {
-  position: fixed;
-  top: 0; left: 0; width: 100vw; height: 100vh;
-  background: rgba(0, 0, 0, 0.4); /* Fondo oscuro */
-  z-index: 100;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-content {
-  background: white;
-  padding: 2.5rem;
-  border-radius: 12px;
-  text-align: center;
-  width: 400px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-}
-
-.modal-content h3 {
-  color: #1f2937;
-  font-size: 1.4rem;
-  margin-bottom: 0.5rem;
-}
-
-.modal-content p {
-  color: #6b7280;
-  font-size: 0.9rem;
-  margin-bottom: 2rem;
-}
-
-.modal-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-}
-
-.btn-cancel {
-  padding: 0.6rem 2rem;
-  border: 1px solid #e5e7eb;
-  background: white;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-  color: #6b7280;
-}
-
-.btn-confirm {
-  padding: 0.6rem 2rem;
-  border: none;
-  background: #b91c1c; /* Rojo oscuro de tu diseño */
-  color: white;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-/* Nuevo estilo para el logo en el encabezado del contenido */
-.dashboard-content-logo {
-  width: 160px; /* Tamaño del logo */
-  height: auto;
-  object-fit: contain;
-  margin-bottom: 3.5rem; /* Espacio antes del saludo "Hola ¡Diego!" */
-  margin-top: 1rem; /* Pequeño ajuste hacia abajo desde el borde superior */
-  z-index: 5;
-}
+/* src/pages/DashboardAdmin.css */
 
 /* ========================================= */
 /* === ESTILOS SECCIÓN CURSOS (GESTIÓN) === */
@@ -335,7 +130,7 @@
 }
 
 /* ========================================= */
-/* === MODAL AÑADIR CURSO === */
+/* === MODALES GRANDES Y ELIMINAR === */
 /* ========================================= */
 
 .modal-content-large {
@@ -528,10 +323,6 @@
   cursor: pointer;
 }
 
-/* ========================================= */
-/* === MODAL ELIMINAR CURSO === */
-/* ========================================= */
-
 .modal-delete-content {
   background: white;
   padding: 2.5rem 2rem;
@@ -611,17 +402,6 @@
 .error-msg-box img {
   width: 14px;
   height: 14px;
-}
-
-.btn-confirm-red {
-  background: #b91c1c;
-  color: white;
-  padding: 0.6rem 1.5rem;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-  width: 50%;
 }
 
 .btn-cancel-delete {
@@ -772,10 +552,6 @@
   filter: brightness(0.95);
   z-index: 10;
 }
-
-/* ========================================= */
-/* === MODALES DE HORARIOS (CALENDARIO) === */
-/* ========================================= */
 
 /* Selects personalizados con la flechita */
 .form-select {
@@ -1023,8 +799,6 @@
 /* ========================================= */
 /* === FORMULARIOS DE USUARIOS (ALUMNOS/MAESTROS) === */
 /* ========================================= */
-
-/* Contenedor para poner dos inputs en la misma fila */
 
 .form-group {
   margin-bottom: 2rem; /* Separación vertical aumentada */

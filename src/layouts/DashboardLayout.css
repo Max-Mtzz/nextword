@@ -1,0 +1,51 @@
+/* Contenedor principal usando el fondo de olas */
+.dashboard-container {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background-color: #f8f9fa;
+  background-image: url('../assets/WAVES 1.svg');
+  background-size: cover; 
+  background-position: center;
+  display: flex;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+}
+
+/* Contenido principal derecho */
+.dashboard-content {
+  flex: 1;
+  padding: 2.5rem 4rem;
+  display: flex;
+  flex-direction: column;
+  z-index: 5;
+  overflow-y: auto; /* Para que haga scroll si la tabla es muy larga */
+}
+
+.dashboard-content-logo {
+  width: 160px;
+  height: auto;
+  object-fit: contain;
+  margin-bottom: 3.5rem;
+  margin-top: 1rem;
+  z-index: 5;
+}
+
+/* Títulos genéricos que van dentro del layout */
+.dashboard-greeting {
+  font-size: 1.5rem;
+  color: #1f2937;
+  font-weight: bold;
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  color: #6b7280;
+  font-weight: bold;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.quick-actions {
+  display: flex;
+  gap: 1.5rem;
+}

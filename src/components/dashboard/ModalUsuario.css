@@ -1,0 +1,41 @@
+.form-group {
+  margin-bottom: 2rem; 
+}
+
+.form-row {
+  display: flex;
+  gap: 3.5rem; 
+  margin-bottom: 2rem; 
+}
+
+.form-row .form-group {
+  flex: 1;
+  margin-bottom: 0; 
+}
+
+/* Estado de input válido e inválido */
+.input-success {
+  border-color: #10b981 !important;
+  background-color: #f0fdf4 !important;
+  color: #065f46;
+  background-image: url('data:image/svg+xml;utf8,<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 6L9 17L4 12" stroke="%2310b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+  background-repeat: no-repeat;
+  background-position: left 10px center;
+  padding-left: 2.2rem !important; 
+}
+
+.input-error {
+  border-color: #ef4444 !important;
+  background-color: #fef2f2 !important;
+  color: #b91c1c;
+}
+
+.error-text-small {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #ef4444;
+  font-size: 0.75rem;
+  margin-top: 0.4rem;
+  font-weight: bold;
+}

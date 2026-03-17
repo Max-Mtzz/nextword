@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthLayout } from '../layouts/AuthLayout';
-import '../components/FloatingBubbles.css'; 
-import './RecuperarPassword.css'; // ¡Reutilizamos el CSS porque el diseño es igual!
+import { FloatingBubbles } from '../components/ui/FloatingBubbles';
+import { InputField } from '../components/ui/InputField';
+import { PrimaryButton } from '../components/ui/PrimaryButton';
+import './RecuperarPassword.css'; // Reutilizamos el mismo CSS
 
 export const RestablecerPassword = () => {
   const [passwords, setPasswords] = useState({ nueva: '', confirmar: '' });
-  const navigate = useNavigate(); // Hook para navegar después de confirmar
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -17,13 +19,7 @@ export const RestablecerPassword = () => {
 
   return (
     <AuthLayout>
-      {/* Burbujas flotantes */}
-      <div className="floating-bubble bubble-1">Hi</div>
-      <div className="floating-bubble bubble-2">Olá</div>
-      <div className="floating-bubble bubble-3">안녕하세요</div>
-      <div className="floating-bubble bubble-4">你好</div>
-      <div className="floating-bubble bubble-5">Hola</div>
-      <div className="floating-bubble bubble-6">こんにちは</div>
+      <FloatingBubbles />
 
       <div className="recuperar-container">
         <h2 className="recuperar-title">Recuperar<br/>contraseña</h2>
@@ -31,29 +27,30 @@ export const RestablecerPassword = () => {
         <div className="recuperar-card">
           <form onSubmit={handleSubmit} className="recuperar-form">
             
-            <div className="input-group">
-              <label>Ingresa tu nueva contraseña</label>
-              <input 
-                type="password" 
-                placeholder="Ingresa tu nueva contraseña" 
-                onChange={(e) => setPasswords({...passwords, nueva: e.target.value})}
-                required
-              />
-            </div>
+            <InputField 
+              label="Ingresa tu nueva contraseña"
+              type="password"
+              name="nueva"
+              value={passwords.nueva}
+              placeholder="Ingresa tu nueva contraseña"
+              onChange={(e) => setPasswords({...passwords, nueva: e.target.value})}
+              required
+            />
 
-            <div className="input-group">
-              <label>Confirma tu contraseña</label>
-              <input 
-                type="password" 
-                placeholder="Confirma tu contraseña" 
-                onChange={(e) => setPasswords({...passwords, confirmar: e.target.value})}
-                required
-              />
-            </div>
+            <InputField 
+              label="Confirma tu contraseña"
+              type="password"
+              name="confirmar"
+              value={passwords.confirmar}
+              placeholder="Confirma tu contraseña"
+              onChange={(e) => setPasswords({...passwords, confirmar: e.target.value})}
+              required
+            />
 
-            <button type="submit" className="recuperar-button" style={{ marginTop: '1rem' }}>
+            {/* Agregamos un poco de margen superior usando un estilo en línea rápido */}
+            <PrimaryButton type="submit" className="btn-recuperar" style={{ marginTop: '1rem' }}>
               Confirmar
-            </button>
+            </PrimaryButton>
 
             <Link to="/" className="volver-link">
               Volver al inicio de sesión

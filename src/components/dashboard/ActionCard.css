@@ -1,0 +1,13 @@
+.action-card {
+  background: white; border-radius: 12px; padding: 1.5rem;
+  width: 130px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  cursor: pointer; border: 1px solid #f3f4f6;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.action-card:hover {
+  transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+}
+.action-card img { width: 45px; height: 45px; margin-bottom: 0.8rem; }
+.action-card span { color: #0082a9; font-weight: bold; font-size: 0.95rem; }

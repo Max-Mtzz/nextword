@@ -1,58 +1,51 @@
 import React, { useState } from 'react';
-import { AuthLayout } from '../layouts/AuthLayout';
-import '../components/FloatingBubbles.css'; 
-import './RecuperarPassword.css';
 import { Link, useNavigate } from 'react-router-dom';
+import { AuthLayout } from '../layouts/AuthLayout';
+import { FloatingBubbles } from '../components/ui/FloatingBubbles';
+import { InputField } from '../components/ui/InputField';
+import { PrimaryButton } from '../components/ui/PrimaryButton';
+import './RecuperarPassword.css';
 
 export const RecuperarPassword = () => {
   const [correo, setCorreo] = useState('');
-  const navigate = useNavigate(); // Inicializamos el hook
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Se enviará la recuperación a:", correo);
-    navigate('/restablecer'); // Le decimos que nos lleve a la nueva pantalla
+    navigate('/restablecer');
   };
 
   return (
     <AuthLayout>
-      {/* Las mismas burbujas flotantes de tu diseño */}
-      <div className="floating-bubble bubble-1">Hi</div>
-      <div className="floating-bubble bubble-2">Olá</div>
-      <div className="floating-bubble bubble-3">안녕하세요</div>
-      <div className="floating-bubble bubble-4">你好</div>
-      <div className="floating-bubble bubble-5">Hola</div>
-      <div className="floating-bubble bubble-6">こんにちは</div>
+      <FloatingBubbles />
 
-      {/* Contenedor que agrupa el título y la tarjeta para mantener todo centrado */}
       <div className="recuperar-container">
-        
         <h2 className="recuperar-title">Recuperar<br/>contraseña</h2>
         
         <div className="recuperar-card">
           <form onSubmit={handleSubmit} className="recuperar-form">
-            <div className="input-group">
-              <label>Correo electrónico</label>
-              <input 
-                type="email" 
-                placeholder="Ingresa tu correo" 
-                value={correo}
-                onChange={(e) => setCorreo(e.target.value)}
-                required
-              />
-            </div>
+            <InputField 
+              label="Correo electrónico"
+              type="email"
+              name="correo"
+              value={correo}
+              placeholder="Ingresa tu correo"
+              onChange={(e) => setCorreo(e.target.value)}
+              required
+            />
 
             <p className="instrucciones-texto">
               El sistema validara tus credenciales para<br/>reestablecer su contraseña.
             </p>
 
-            <button type="submit" className="recuperar-button">
+            <PrimaryButton type="submit" className="btn-recuperar">
               Recuperar
-            </button>
+            </PrimaryButton>
 
             <Link to="/" className="volver-link">
-            Volver al inicio de sesión
-           </Link>
+              Volver al inicio de sesión
+            </Link>
           </form>
         </div>
       </div>

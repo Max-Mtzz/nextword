@@ -1,4 +1,4 @@
-/* Tarjeta principal */
+/* Tarjeta principal exclusiva del Login */
 .login-card {
   background-color: white;
   padding: 2.5rem;
@@ -27,31 +27,7 @@
   text-align: left;
 }
 
-/* Estilos de las etiquetas y cajas de texto */
-.input-group label {
-  color: #4b5563;
-  font-weight: bold;
-  font-size: 0.9rem;
-  display: block;
-  margin-bottom: 0.3rem;
-}
-
-.input-group input {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.5rem;
-  background-color: #f9fafb;
-  font-size: 1rem;
-  outline: none;
-  box-sizing: border-box;
-}
-
-.input-group input:focus {
-  border-color: #0082a9;
-}
-
-/* Enlace y Botón */
+/* Enlace específico de recuperar contraseña */
 .forgot-password {
   font-size: 0.8rem;
   color: #0082a9;
@@ -59,26 +35,9 @@
   font-weight: bold;
   text-decoration: none;
   margin-top: -0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .forgot-password:hover {
   text-decoration: underline;
-}
-
-.login-button {
-  background-color: #0082a9;
-  color: white;
-  font-weight: bold;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  font-size: 1rem;
-  align-self: center;
-  transition: background-color 0.3s;
-  width: 80%;
-}
-
-.login-button:hover {
-  background-color: #006685;
 }
