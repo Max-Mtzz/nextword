@@ -8,6 +8,7 @@ import { ModalUsuario } from '../components/dashboard/ModalUsuario';
 import { ModalEliminar } from '../components/dashboard/ModalEliminar';
 import { CursoCard } from '../components/dashboard/CursoCard';
 import { ModalCurso } from '../components/dashboard/ModalCurso';
+import { CalendarioSemanario } from '../components/dashboard/CalendarioSemanario';
 import './DashboardAdmin.css';
 
 // Iconos
@@ -116,6 +117,18 @@ export const DashboardAdmin = () => {
         </>
       )}
 
+      {activeView === 'calendar' && (
+        <CalendarioSemanario 
+          curso={selectedCourse}
+          onBack={() => { setActiveView('courses'); setSelectedCourse(null); }}
+          onAddSchedule={() => setIsAddScheduleModalOpen(true)}
+          onEventClick={(datosHorario) => {
+            // Cuando le dan clic al bloque rojo, abrimos el modal de acciones
+            setActionModal({ isOpen: true, data: datosHorario });
+          }}
+        />
+      )}
+
           {/* AQUÍ RECICLAMOS LA MISMA TABLA PARA MAESTROS */}
           <TablaUsuarios 
             data={maestrosData}
@@ -180,7 +193,7 @@ export const DashboardAdmin = () => {
         }}
       />
 
-      
+
     </DashboardLayout>
   );
 };
