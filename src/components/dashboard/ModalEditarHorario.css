@@ -1,0 +1,63 @@
+/* Ajuste del ancho específico para este modal */
+.edit-modal-specific {
+  width: 480px;
+  padding: 2rem 2.5rem;
+}
+
+/* Input de solo lectura con texto a la derecha como en Figma */
+.input-readonly {
+  background-color: #f9fafb;
+  color: #4b5563;
+  text-align: right;
+  cursor: not-allowed;
+}
+
+/* Fila de 3 columnas para la fecha */
+.select-row-3 {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+}
+
+.select-row-3 .form-select {
+  flex: 1; /* Hace que los 3 midan exactamente lo mismo */
+}
+
+/* Fila de 2 columnas para las horas */
+.select-row-2 {
+  display: flex;
+  gap: 1.5rem;
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+.form-group-inline {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group-inline label {
+  font-size: 0.85rem;
+  color: #4b5563;
+  margin-bottom: 0.5rem;
+}
+
+/* Ajuste del footer para que el texto quede arriba de los botones */
+.modal-footer-edit {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.modal-footer-edit .footer-buttons {
+  display: flex;
+  width: 100%;
+  gap: 1rem;
+}
+
+.modal-footer-edit .btn-cancel,
+.modal-footer-edit .btn-confirm-blue {
+  flex: 1; /* Botones del mismo tamaño */
+}
