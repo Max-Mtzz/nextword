@@ -1,0 +1,99 @@
+/* ======================================================= */
+/* ESTILOS DE LA TABLA DE HORARIOS (PRÓXIMOS CURSOS)      */
+/* ======================================================= */
+
+.table-container {
+  width: 100%;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f1f5f9;
+  margin-top: 1rem;
+}
+
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+/* Encabezados */
+.custom-table th {
+  background-color: #f8fafc; /* Gris muy claro */
+  padding: 1.2rem 1rem;
+  font-weight: 700;
+  color: #475569;
+  border-bottom: 2px solid #f1f5f9;
+  text-transform: none;
+}
+
+/* Celdas */
+.custom-table td {
+  padding: 1.2rem 1rem;
+  color: #1e293b;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+/* Fila interactiva */
+.custom-table tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+/* Estilo especial para el nombre del curso */
+.course-name-cell {
+  font-weight: 600;
+  color: #334155;
+}
+
+/* Contenedor de botones de acción */
+.actions-cell {
+  display: flex;
+  justify-content: center;
+  gap: 1.2rem;
+  align-items: center;
+}
+
+/* Botón Editar (Lápiz) */
+.btn-table-edit {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  transition: transform 0.2s;
+}
+
+.btn-table-edit img {
+  width: 20px;
+  height: 20px;
+}
+
+.btn-table-edit:hover {
+  transform: scale(1.15);
+}
+
+/* Botón Eliminar (Bote de basura) */
+.btn-table-delete {
+  background: none;
+  border: none;
+  color: #ef4444; /* Rojo figma */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.btn-table-delete:hover {
+  transform: scale(1.15);
+  color: #b91c1c;
+}
+
+/* Quitar borde a la última fila */
+.custom-table tbody tr:last-child td {
+  border-bottom: none;
+}

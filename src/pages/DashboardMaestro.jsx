@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '../layouts/DashboardLayout';
 import { ActionCard } from '../components/dashboard/ActionCard';
 import { ConfirmModal } from '../components/ui/ConfirmModal';
@@ -10,24 +11,20 @@ import { ModalExito } from '../components/dashboard/ModalExito';
 import { ModalConfirmarEliminarHorario } from '../components/dashboard/ModalConfirmarEliminarHorario';
 import { ModalAccionHorario } from '../components/dashboard/ModalAccionHorario';
 import { ModalConfirmarPassword } from '../components/dashboard/ModalConfirmarPassword';
-import { useNavigate } from 'react-router-dom';
-
+import { ModalErrorCancelacion } from '../components/dashboard/ModalErrorCancelacion';
+import './DashboardMaestro.css';
 
 // Assets
 import relojRellenoIcon from '../assets/reloj_relleno.svg';
 import bookIcon2 from '../assets/book_icon_2.svg';
-// FALTABAN ESTOS IMPORT PARA LAS BANDERAS
 import chinaIcon from '../assets/china_icon.svg'; 
-import usaIcon from '../assets/china_icon.svg'; // Cambia esto si tienes un usa_icon.svg real
-import './DashboardMaestro.css';
+import usaIcon from '../assets/china_icon.svg'; 
 
-// Datos simulados (Luego vendrán de un useEffect fetch() al Spring Boot)
 const assignedCoursesData = [
-  { id: 1, curso: 'Ingles básico', descripcion: 'Nivel Introductorio', modalidad: 'Presencial', fecha: '2026/02/20', hora: '13:00' },
-  { id: 2, curso: 'Grammar', descripcion: 'Refuerzo', modalidad: 'Virtual', fecha: '2026/02/12', hora: '11:00' }
+  { id: 1, curso: 'Ingles básico', modalidad: 'Presencial', fecha: '2026/02/20', hora: '13:00' },
+  { id: 2, curso: 'Grammar', modalidad: 'Virtual', fecha: '2026/02/12', hora: '11:00' }
 ];
 
-// FALTABA ESTA BASE DE DATOS FALSA DE LAS BANDERAS
 const misCursosData = [
   { id: 1, nombre: 'Inglés', flag: usaIcon },
   { id: 2, nombre: 'Chino', flag: chinaIcon },
@@ -37,20 +34,25 @@ export const DashboardMaestro = () => {
   const [activeView, setActiveView] = useState('main'); 
   const [selectedCourse, setSelectedCourse] = useState(null); 
   
-  // Estados de los Modales extraídos
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isAddScheduleModalOpen, setIsAddScheduleModalOpen] = useState(false);
   const [editClassModal, setEditClassModal] = useState({ isOpen: false, data: null });
-  const [showSuccessModal, setShowSuccessModal] = useState({ isOpen: false, mensaje: '' });
   const [deleteHorarioConfirmation, setDeleteHorarioConfirmation] = useState({ isOpen: false, data: null });
   const [actionModal, setActionModal] = useState({ isOpen: false, data: null });
-  const [passwordPrompt, setPasswordPrompt] = useState({ isOpen: false, actionToExecute: null });
+  
+  const [showSuccessModal, setShowSuccessModal] = useState({ isOpen: false, mensaje: '' });
+  const [error24h, setError24h] = useState({ isOpen: false, horas: 0 });
+  const [passwordPrompt, setPasswordPrompt] = useState({ 
+    isOpen: false, 
+    type: null, 
+    actionToExecute: null 
+  });
 
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    setIsLogoutModalOpen(false); // 1. Cierra el modal
-    navigate('/');               // 2. Te manda a la pantalla de Login
+    setIsLogoutModalOpen(false);
+    navigate('/');
   };
 
   return (
@@ -112,13 +114,12 @@ export const DashboardMaestro = () => {
           onBack={() => { setActiveView('courses'); setSelectedCourse(null); }}
           onAddSchedule={() => setIsAddScheduleModalOpen(true)}
           onEventClick={(datosHorario) => {
-            // Cuando hacen clic en el calendario, se abre el modal "Seleccionar Acción"
             setActionModal({ isOpen: true, data: datosHorario }); 
           }}
         />
       )}
 
-      {/* VISTA D: TABLA DE HORARIOS (Esto es lo que se te había roto) */}
+      {/* VISTA D: TABLA DE HORARIOS */}
       {activeView === 'assigned_courses' && (
         <>
           <div className="calendar-top-bar">
@@ -135,12 +136,10 @@ export const DashboardMaestro = () => {
             data={assignedCoursesData} 
             onEdit={(item) => setEditClassModal({ isOpen: true, data: item })} 
             onDelete={(item) => {
-              
-              // Redirigimos al modal de horario (el amarillo) y adaptamos los nombres
               setDeleteHorarioConfirmation({ 
                 isOpen: true, 
                 data: {
-                  profesor: 'Diego Salazar', // Nombre del maestro
+                  profesor: 'Diego Salazar', 
                   dia: item.fecha,
                   hora: item.hora,
                   curso: item.curso
@@ -152,7 +151,7 @@ export const DashboardMaestro = () => {
       )}
 
       {/* ==================================== */}
-      {/* INVOCACIÓN DE LOS COMPONENTES MODAL  */}
+      {/* MODALES */}
       {/* ==================================== */}
 
       <ConfirmModal 
@@ -168,7 +167,6 @@ export const DashboardMaestro = () => {
         isOpen={isAddScheduleModalOpen}
         onClose={() => setIsAddScheduleModalOpen(false)}
         onSave={(datosHorario) => { 
-          console.log("Guardando horario nuevo del maestro...", datosHorario); 
           setIsAddScheduleModalOpen(false); 
           setShowSuccessModal({ 
             isOpen: true, 
@@ -186,7 +184,6 @@ export const DashboardMaestro = () => {
           setEditClassModal({ isOpen: true, data: actionModal.data });
         }}
         onDelete={() => {
-          // Cerramos este recuadro y abrimos la alerta especial de eliminar horario
           setActionModal({ isOpen: false, data: null });
           setDeleteHorarioConfirmation({ isOpen: true, data: actionModal.data });
         }}
@@ -197,7 +194,6 @@ export const DashboardMaestro = () => {
         initialData={editClassModal.data}
         onClose={() => setEditClassModal({ isOpen: false, data: null })}
         onSave={(nuevosDatos) => {
-          console.log("Guardando cambios en el horario...", nuevosDatos);
           setEditClassModal({ isOpen: false, data: null });
           setShowSuccessModal({ 
             isOpen: true, 
@@ -206,20 +202,18 @@ export const DashboardMaestro = () => {
         }}
       />
 
+      {/* PASO 1: Confirmación inicial del horario (Alerta Amarilla) */}
       <ModalConfirmarEliminarHorario 
         isOpen={deleteHorarioConfirmation.isOpen}
         datosHorario={deleteHorarioConfirmation.data}
         onClose={() => setDeleteHorarioConfirmation({ isOpen: false, data: null })}
         onConfirm={() => {
-          // 1. Cerramos la alerta amarilla
           setDeleteHorarioConfirmation({ isOpen: false, data: null });
-
-          // 2. Abrimos la contraseña y "guardamos" la acción de borrar
           setPasswordPrompt({
             isOpen: true,
+            type: 'horario', // 👈 ESTO DISPARA LA REGLA DE 24H EN EL SIGUIENTE PASO
             actionToExecute: () => {
-              console.log("Eliminando horario en Oracle...", deleteHorarioConfirmation.data);
-              // 3. Al final mostramos el éxito
+              console.log("Eliminando horario en Oracle...");
               setShowSuccessModal({ 
                 isOpen: true, 
                 mensaje: <>El horario se ha eliminado con <strong style={{color: '#4b5563'}}>éxito</strong>.</>
@@ -229,17 +223,37 @@ export const DashboardMaestro = () => {
         }}
       />
 
+      {/* PASO 2: Contraseña y Validación de 24 horas */}
       <ModalConfirmarPassword
         isOpen={passwordPrompt.isOpen}
-        onClose={() => setPasswordPrompt({ isOpen: false, actionToExecute: null })}
+        onClose={() => setPasswordPrompt({ isOpen: false, type: null, actionToExecute: null })}
         onConfirm={() => {
-          if (passwordPrompt.actionToExecute) {
-            passwordPrompt.actionToExecute(); // Ejecuta el borrado real
+          // Si estamos borrando un horario, validamos el tiempo
+          if (passwordPrompt.type === 'horario') {
+            const horasFaltantes = 8; // Simulación: luego vendrá del cálculo de fechas
+
+            if (horasFaltantes < 24) {
+              setPasswordPrompt({ isOpen: false, type: null, actionToExecute: null });
+              setError24h({ isOpen: true, horas: horasFaltantes });
+              return; 
+            }
           }
-          setPasswordPrompt({ isOpen: false, actionToExecute: null });
+
+          if (passwordPrompt.actionToExecute) {
+            passwordPrompt.actionToExecute();
+          }
+          setPasswordPrompt({ isOpen: false, type: null, actionToExecute: null });
         }}
       />
 
+      {/* PASO 3 (Si falla): Modal de Candado (24h) */}
+      <ModalErrorCancelacion 
+        isOpen={error24h.isOpen}
+        horasRestantes={error24h.horas}
+        onClose={() => setError24h({ isOpen: false, horas: 0 })}
+      />
+
+      {/* PASO 3 (Si tiene éxito): Modal de Éxito */}
       <ModalExito 
         isOpen={showSuccessModal.isOpen}
         mensaje={showSuccessModal.mensaje}
