@@ -25,7 +25,7 @@ export const Login = () => {
     //   navigate('/dashboard-maestro');
     // } catch (error) { ... }
     
-    navigate('/dashboard-maestro'); 
+    navigate('/dashboard'); 
   };
 
   return (

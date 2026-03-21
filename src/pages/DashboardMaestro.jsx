@@ -133,7 +133,7 @@ export const DashboardMaestro = () => {
             data={assignedCoursesData} 
             onEdit={(item) => setEditClassModal({ isOpen: true, data: item })} 
             onDelete={(item) => {
-              // 👇 AQUÍ ESTÁ LA CORRECCIÓN PRINCIPAL 👇
+              
               // Redirigimos al modal de horario (el amarillo) y adaptamos los nombres
               setDeleteHorarioConfirmation({ 
                 isOpen: true, 

@@ -2,7 +2,7 @@ import React from 'react';
 import './CalendarioMaestro.css';
 
 const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-const horasDia = ['8 AM', '9 AM', '10 AM', '11 AM', '12 PM', '1 PM', '2 PM', '3 PM'];
+const horasDia = ['8 AM', '9 AM', '10 AM', '11 AM', '12 PM', '1 PM', '2 PM', '3 PM', '4 PM', '5 PM', '6 PM', '7 PM', '8 PM'];
 
 export const CalendarioMaestro = ({ curso, onBack, onAddSchedule, onEventClick }) => {
   return (
@@ -24,7 +24,8 @@ export const CalendarioMaestro = ({ curso, onBack, onAddSchedule, onEventClick }
         </div>
       </div>
 
-      <div className="calendar-wrapper" style={{ padding: 0, border: 'none', boxShadow: 'none' }}>
+      {/* 👇 AQUÍ APLICAMOS LA NUEVA CLASE PARA HACERLO GRANDE Y CON SCROLL 👇 */}
+      <div className="calendar-scroll-wrapper">
         <div className="calendar-grid-maestro">
           <div className="cal-header-cell-m" style={{ borderBottom: 'none' }}></div>
           

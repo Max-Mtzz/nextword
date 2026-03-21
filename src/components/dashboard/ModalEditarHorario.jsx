@@ -1,102 +1,113 @@
-import React, { useState, useEffect } from 'react';
-import './ModalEditarHorario.css';
+import React from 'react';
 
 export const ModalEditarHorario = ({ isOpen, onClose, onSave, initialData }) => {
-  const [formData, setFormData] = useState({});
-
-  useEffect(() => {
-    if (initialData) {
-      setFormData(initialData);
-    }
-  }, [initialData, isOpen]);
-
   if (!isOpen) return null;
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSave(formData);
-  };
+  
+  // Genera un arreglo con números del 1 al 31 mágicamente
+  const diasNumeros = Array.from({ length: 31 }, (_, i) => i + 1);
+  
+  const meses = [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+  ];
+
+  // Años disponibles (puedes agregar más si lo necesitas)
+  const años = [2024, 2025, 2026, 2027, 2028, 2029, 2030];
+
+  const horas = [
+    '7:00 AM', '8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM',
+    '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM', '6:00 PM', '7:00 PM', '8:00 PM'
+  ];
 
   return (
     <div className="modal-overlay">
-      <div className="modal-content-large edit-modal-specific">
+      <div className="modal-content-large" style={{ width: '550px', padding: '2rem' }}>
         
-        <div className="modal-header">
+        <div className="modal-header" style={{ marginBottom: '1.5rem' }}>
           <h3>Editar horario</h3>
-          <button className="close-btn" type="button" onClick={onClose}>×</button>
+          <button className="close-btn" onClick={onClose}>×</button>
         </div>
 
-        <form onSubmit={handleSubmit}>
-          
-          {/* Campo: Profesor (Deshabilitado) */}
-          <div className="form-group">
-            <label>Profesor</label>
-            <input 
-              type="text" 
-              className="form-control input-readonly" 
-              value="Diego Salazar" 
-              readOnly 
-            />
-          </div>
+        {/* CAMPO: PROFESOR (Deshabilitado y alineado a la derecha como en tu diseño) */}
+        <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+          <label style={{ color: '#6b7280', fontSize: '0.9rem', marginBottom: '0.5rem', display: 'block' }}>Profesor</label>
+          <input 
+            type="text" 
+            className="form-control" 
+            value={initialData?.profesor || "Diego Salazar"} 
+            disabled 
+            style={{ backgroundColor: '#ffffff', color: '#4b5563', textAlign: 'right', borderColor: '#e5e7eb' }} 
+          />
+        </div>
 
-          {/* Campo: Fecha (3 columnas) */}
-          <div className="form-group">
-            <label>Fecha*</label>
-            <div className="select-row-3">
-              <select className="form-select" defaultValue="Día">
-                <option value="Día" disabled>Día</option>
-                <option value="20">20</option>
-                <option value="21">21</option>
-              </select>
-              <select className="form-select" defaultValue="Mes">
-                <option value="Mes" disabled>Mes</option>
-                <option value="02">02</option>
-                <option value="03">03</option>
-              </select>
-              <select className="form-select" defaultValue="Año">
-                <option value="Año" disabled>Año</option>
-                <option value="2026">2026</option>
-              </select>
-            </div>
-          </div>
+        {/* CAMPO: FECHA (3 columnas: Día, Mes, Año) */}
+        <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+          <label style={{ color: '#6b7280', fontSize: '0.9rem', marginBottom: '0.5rem', display: 'block' }}>Fecha*</label>
+          <div style={{ display: 'flex', gap: '1rem' }}>
+            <select className="form-select" style={{ flex: 1 }}>
+              <option value="">Día</option>
+              {diasNumeros.map(dia => (
+                <option key={dia} value={dia}>{dia}</option>
+              ))}
+            </select>
+            
+            <select className="form-select" style={{ flex: 1 }}>
+              <option value="">Mes</option>
+              {meses.map(mes => (
+                <option key={mes} value={mes}>{mes}</option>
+              ))}
+            </select>
 
-          {/* Campo: Horas (2 columnas con sus propios labels) */}
-          <div className="select-row-2">
-            <div className="form-group-inline">
-              <label>Hora de inicio*</label>
-              <select className="form-select" defaultValue="8 AM">
-                <option value="8 AM">8 AM</option>
-                <option value="9 AM">9 AM</option>
-              </select>
-            </div>
-            <div className="form-group-inline">
-              <label>Hora de fin*</label>
-              <select className="form-select" defaultValue="9 AM">
-                <option value="9 AM">9 AM</option>
-                <option value="10 AM">10 AM</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Campo: Estado */}
-          <div className="form-group">
-            <label>Estado</label>
-            <select className="form-select" defaultValue="Disponible">
-              <option value="Disponible">Disponible</option>
-              <option value="Lleno">Lleno</option>
+            <select className="form-select" style={{ flex: 1 }}>
+              <option value="">Año</option>
+              {años.map(año => (
+                <option key={año} value={año}>{año}</option>
+              ))}
             </select>
           </div>
+        </div>
 
-          {/* Pie de formulario */}
-          <div className="modal-footer-edit">
-            <span className="required-text">Los campos marcados con (*) son obligatorios</span>
-            <div className="footer-buttons">
-              <button type="button" className="btn-cancel" onClick={onClose}>Cancelar</button>
-              <button type="submit" className="btn-confirm-blue">Guardar cambios</button>
-            </div>
+        {/* CAMPOS: HORAS (2 columnas: Inicio y Fin) */}
+        <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '1.5rem' }}>
+          <div className="form-group" style={{ flex: 1, marginBottom: 0 }}>
+            <label style={{ color: '#6b7280', fontSize: '0.9rem', marginBottom: '0.5rem', display: 'block' }}>Hora de inicio*</label>
+            <select className="form-select">
+              <option value="">8 AM</option>
+              {horas.map((hora, index) => (
+                <option key={index} value={hora}>{hora}</option>
+              ))}
+            </select>
           </div>
+          <div className="form-group" style={{ flex: 1, marginBottom: 0 }}>
+            <label style={{ color: '#6b7280', fontSize: '0.9rem', marginBottom: '0.5rem', display: 'block' }}>Hora de fin*</label>
+            <select className="form-select">
+              <option value="">9 AM</option>
+              {horas.map((hora, index) => (
+                <option key={index} value={hora}>{hora}</option>
+              ))}
+            </select>
+          </div>
+        </div>
 
-        </form>
+        {/* CAMPO: ESTADO */}
+        <div className="form-group" style={{ marginBottom: '2rem' }}>
+          <label style={{ color: '#6b7280', fontSize: '0.9rem', marginBottom: '0.5rem', display: 'block' }}>Estado</label>
+          <select className="form-select">
+            <option>Disponible</option>
+            <option>Lleno</option>
+          </select>
+        </div>
+
+        {/* FOOTER: Texto obligatorio y Botones */}
+        <div className="modal-footer" style={{ marginTop: '1rem', paddingTop: '0', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '1rem' }}>
+          <p style={{ margin: 0, fontSize: '0.85rem', color: '#94a3b8' }}>Los campos marcados con (*) son obligatorios</p>
+          <div className="footer-buttons" style={{ width: '100%', display: 'flex', gap: '1rem' }}>
+            <button type="button" className="btn-cancel" style={{ flex: 1, padding: '0.8rem' }} onClick={onClose}>Cancelar</button>
+            <button type="button" className="btn-confirm-blue" style={{ flex: 1, padding: '0.8rem', backgroundColor: '#0082a9' }} onClick={onSave}>Guardar cambios</button>
+          </div>
+        </div>
+
       </div>
     </div>
   );

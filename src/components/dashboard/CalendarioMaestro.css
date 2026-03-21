@@ -74,3 +74,19 @@
   font-size: 0.85rem;
   font-weight: bold;
 }
+
+.calendar-scroll-wrapper {
+  max-height: 75vh; /* Esto hace que ocupe el 75% del alto de tu monitor */
+  overflow-y: auto;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+/* Opcional: Para que tu scrollbar se vea más moderna y delgadita */
+.calendar-scroll-wrapper::-webkit-scrollbar {
+  width: 8px;
+}
+.calendar-scroll-wrapper::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 4px;
+}
