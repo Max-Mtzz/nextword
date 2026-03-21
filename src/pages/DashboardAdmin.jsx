@@ -63,8 +63,12 @@ export const DashboardAdmin = () => {
   const [deleteHorarioConfirmation, setDeleteHorarioConfirmation] = useState({ isOpen: false, data: null });
   const [showSuccessModal, setShowSuccessModal] = useState({ isOpen: false, mensaje: '' });
   
-  // ESTADO DE LA CONTRASEÑA
-  const [passwordPrompt, setPasswordPrompt] = useState({ isOpen: false, actionToExecute: null });
+  const [passwordPrompt, setPasswordPrompt] = useState({ 
+  isOpen: false, 
+  type: null, // Aquí guardaremos si es 'horario', 'usuario' o 'curso'
+  actionToExecute: null 
+});
+  
   // Cerca de tus otros estados
 const [error24h, setError24h] = useState({ isOpen: false, horas: 0 });
 
@@ -241,22 +245,22 @@ const [error24h, setError24h] = useState({ isOpen: false, horas: 0 });
         }}
       />
 
-      {/* Modal para eliminar Usuario */}
-      <ModalEliminar 
+     <ModalEliminar 
         isOpen={deleteUser.isOpen}
         itemType="usuario"
         itemName={deleteUser.data?.nombre}
         onClose={() => setDeleteUser({ isOpen: false, step: 1, type: 'alumno', data: null })}
         onConfirm={() => {
-          // 1. Cerramos la alerta
           setDeleteUser({ isOpen: false, step: 1, type: 'alumno', data: null });
-          
-          // 2. Abrimos la contraseña
           setPasswordPrompt({
             isOpen: true,
+            type: 'usuario', // 👈 ESTO evita que pida validación de 24h
             actionToExecute: () => {
-              console.log(`Eliminando usuario en Oracle...`, deleteUser.data?.id);
-              setShowSuccessModal({ isOpen: true, mensaje: <>El usuario se ha eliminado con <strong style={{color: '#4b5563'}}>éxito</strong>.</> });
+              console.log(`Eliminando usuario...`, deleteUser.data?.id);
+              setShowSuccessModal({ 
+                isOpen: true, 
+                mensaje: <>El usuario se ha eliminado con <strong style={{color: '#4b5563'}}>éxito</strong>.</> 
+              });
             }
           });
         }}
@@ -274,22 +278,23 @@ const [error24h, setError24h] = useState({ isOpen: false, horas: 0 });
         }}
       />
 
-      {/* Modal para eliminar Curso */}
+      {/* Modal para eliminar Curso (Corregido) */}
       <ModalEliminar 
         isOpen={deleteCourse.isOpen}
         itemType="curso"
         itemName={deleteCourse.data?.nombre}
         onClose={() => setDeleteCourse({ isOpen: false, data: null })}
         onConfirm={() => {
-          // 1. Cerramos la alerta
           setDeleteCourse({ isOpen: false, data: null });
-
-          // 2. Abrimos la contraseña
           setPasswordPrompt({
             isOpen: true,
+            type: 'curso', // 👈 ESTO evita que pida validación de 24h
             actionToExecute: () => {
-              console.log("Eliminando curso en Oracle...", deleteCourse.data?.id);
-              setShowSuccessModal({ isOpen: true, mensaje: <>El curso se ha eliminado con <strong style={{color: '#4b5563'}}>éxito</strong>.</> });
+              console.log("Eliminando curso...", deleteCourse.data?.id);
+              setShowSuccessModal({ 
+                isOpen: true, 
+                mensaje: <>El curso se ha eliminado con <strong style={{color: '#4b5563'}}>éxito</strong>.</> 
+              });
             }
           });
         }}
@@ -322,21 +327,22 @@ const [error24h, setError24h] = useState({ isOpen: false, horas: 0 });
         }}
       />
 
-      {/* Modal de confirmación para eliminar horario */}
+      {/* Modal de confirmación para eliminar horario (Corregido) */}
       <ModalConfirmarEliminarHorario 
         isOpen={deleteHorarioConfirmation.isOpen}
         datosHorario={deleteHorarioConfirmation.data}
         onClose={() => setDeleteHorarioConfirmation({ isOpen: false, data: null })}
         onConfirm={() => {
-          // 1. Cerramos la alerta amarilla
           setDeleteHorarioConfirmation({ isOpen: false, data: null });
-
-          // 2. Abrimos la contraseña
           setPasswordPrompt({
             isOpen: true,
+            type: 'horario', // 👈 ESTO activa la validación de 24h en el siguiente paso
             actionToExecute: () => {
-              console.log("Eliminando horario en Oracle...", deleteHorarioConfirmation.data);
-              setShowSuccessModal({ isOpen: true, mensaje: <>El horario se ha eliminado con <strong style={{color: '#4b5563'}}>éxito</strong>.</> });
+              console.log("Eliminando horario...", deleteHorarioConfirmation.data);
+              setShowSuccessModal({ 
+                isOpen: true, 
+                mensaje: <>El horario se ha eliminado con <strong style={{color: '#4b5563'}}>éxito</strong>.</> 
+              });
             }
           });
         }}
@@ -359,23 +365,24 @@ const [error24h, setError24h] = useState({ isOpen: false, horas: 0 });
      
       <ModalConfirmarPassword
         isOpen={passwordPrompt.isOpen}
-        onClose={() => setPasswordPrompt({ isOpen: false, actionToExecute: null })}
+        onClose={() => setPasswordPrompt({ isOpen: false, type: null, actionToExecute: null })}
         onConfirm={() => {
-          // --- SIMULACIÓN DE VALIDACIÓN DE 24 HORAS ---
-          // Supongamos que calculamos la diferencia y nos da 8 horas
-          const horasFaltantes = 8; 
+          // 1. VALIDACIÓN SOLO PARA HORARIOS
+          if (passwordPrompt.type === 'horario') {
+            const horasFaltantes = 8; // Simulación
 
-          if (horasFaltantes < 24) {
-            // Caso ERROR: Menos de 24 horas
-            setPasswordPrompt({ isOpen: false, actionToExecute: null });
-            setError24h({ isOpen: true, horas: horasFaltantes });
-          } else {
-            // Caso ÉXITO: Más de 24 horas, procedemos a borrar
-            if (passwordPrompt.actionToExecute) {
-              passwordPrompt.actionToExecute();
+            if (horasFaltantes < 24) {
+              setPasswordPrompt({ isOpen: false, type: null, actionToExecute: null });
+              setError24h({ isOpen: true, horas: horasFaltantes });
+              return; // Detenemos aquí, no se ejecuta el borrado
             }
-            setPasswordPrompt({ isOpen: false, actionToExecute: null });
           }
+
+          // 2. PARA TODO LO DEMÁS (ALUMNOS, MAESTROS, CURSOS) O HORARIOS VÁLIDOS:
+          if (passwordPrompt.actionToExecute) {
+            passwordPrompt.actionToExecute();
+          }
+          setPasswordPrompt({ isOpen: false, type: null, actionToExecute: null });
         }}
       />
 
