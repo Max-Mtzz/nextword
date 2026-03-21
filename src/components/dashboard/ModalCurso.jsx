@@ -88,10 +88,7 @@ export const ModalCurso = ({ isOpen, onClose, onSave, mode = 'add', initialData 
                   <img src={previewImage} alt="Vista previa" className="preview-image-actual" />
                   
                   <div className="preview-actions">
-                    <button type="button" className="btn-reemplazar" onClick={handleSimularSubida}>
-                      <img src={recargarIcon} alt="Reemplazar" style={{width: '14px'}} />
-                      Reemplazar
-                    </button>
+    
                     <button type="button" className="btn-eliminar-preview" onClick={handleEliminarImagen}>
                       <img src={basuraIcon} alt="Eliminar" style={{width: '14px'}} />
                       Eliminar

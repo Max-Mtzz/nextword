@@ -9,6 +9,7 @@ import { CalendarioMaestro } from '../components/dashboard/CalendarioMaestro';
 import { ModalExito } from '../components/dashboard/ModalExito';
 import { ModalConfirmarEliminarHorario } from '../components/dashboard/ModalConfirmarEliminarHorario';
 import { ModalAccionHorario } from '../components/dashboard/ModalAccionHorario';
+import { ModalConfirmarPassword } from '../components/dashboard/ModalConfirmarPassword';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -43,6 +44,7 @@ export const DashboardMaestro = () => {
   const [showSuccessModal, setShowSuccessModal] = useState({ isOpen: false, mensaje: '' });
   const [deleteHorarioConfirmation, setDeleteHorarioConfirmation] = useState({ isOpen: false, data: null });
   const [actionModal, setActionModal] = useState({ isOpen: false, data: null });
+  const [passwordPrompt, setPasswordPrompt] = useState({ isOpen: false, actionToExecute: null });
 
   const navigate = useNavigate();
 
@@ -209,14 +211,32 @@ export const DashboardMaestro = () => {
         datosHorario={deleteHorarioConfirmation.data}
         onClose={() => setDeleteHorarioConfirmation({ isOpen: false, data: null })}
         onConfirm={() => {
-          console.log("Eliminando horario en Oracle...", deleteHorarioConfirmation.data);
+          // 1. Cerramos la alerta amarilla
           setDeleteHorarioConfirmation({ isOpen: false, data: null });
-          
-          // Opcional: También le mostramos éxito al eliminar
-          setShowSuccessModal({ 
-            isOpen: true, 
-            mensaje: <>El horario se ha eliminado con <strong style={{color: '#4b5563'}}>éxito</strong>.</>
+
+          // 2. Abrimos la contraseña y "guardamos" la acción de borrar
+          setPasswordPrompt({
+            isOpen: true,
+            actionToExecute: () => {
+              console.log("Eliminando horario en Oracle...", deleteHorarioConfirmation.data);
+              // 3. Al final mostramos el éxito
+              setShowSuccessModal({ 
+                isOpen: true, 
+                mensaje: <>El horario se ha eliminado con <strong style={{color: '#4b5563'}}>éxito</strong>.</>
+              });
+            }
           });
+        }}
+      />
+
+      <ModalConfirmarPassword
+        isOpen={passwordPrompt.isOpen}
+        onClose={() => setPasswordPrompt({ isOpen: false, actionToExecute: null })}
+        onConfirm={() => {
+          if (passwordPrompt.actionToExecute) {
+            passwordPrompt.actionToExecute(); // Ejecuta el borrado real
+          }
+          setPasswordPrompt({ isOpen: false, actionToExecute: null });
         }}
       />
 

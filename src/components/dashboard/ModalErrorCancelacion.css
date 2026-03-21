@@ -1,0 +1,76 @@
+.modal-content-error-24h {
+  background: white;
+  width: 440px;
+  padding: 2.5rem;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.lock-icon-wrapper {
+  width: 90px;
+  height: 90px;
+  background-color: #fffbeb; /* Fondo amarillento muy suave */
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+/* Ajuste de tu icono de asset */
+.warning-lock-icon {
+  width: 60px; /* Tamaño ideal para que luzca dentro del círculo */
+  height: 60px;
+  object-fit: contain;
+}
+
+.error-24h-title {
+  font-size: 1.6rem;
+  color: #1f2937;
+  font-weight: 800;
+  margin-bottom: 0.8rem;
+  text-align: center;
+}
+
+.error-24h-subtitle {
+  font-size: 0.95rem;
+  color: #6b7280;
+  text-align: center;
+  line-height: 1.4;
+  margin-bottom: 1.5rem;
+}
+
+.time-alert-box {
+  width: 100%;
+  background-color: #fffbeb;
+  border: 1px solid #fde047;
+  padding: 1rem;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #b45309;
+  font-weight: 700;
+  margin-bottom: 2rem;
+}
+
+.btn-understood {
+  width: 100%;
+  padding: 1.1rem;
+  background-color: #0082a9;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-understood:hover {
+  background-color: #006685;
+}

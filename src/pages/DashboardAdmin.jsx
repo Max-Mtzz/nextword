@@ -14,6 +14,8 @@ import { ModalAccionHorario } from '../components/dashboard/ModalAccionHorario';
 import { ModalEditarHorario } from '../components/dashboard/ModalEditarHorario';
 import { ModalConfirmarEliminarHorario } from '../components/dashboard/ModalConfirmarEliminarHorario';
 import { ModalExito } from '../components/dashboard/ModalExito';
+import { ModalConfirmarPassword } from '../components/dashboard/ModalConfirmarPassword';
+import { ModalErrorCancelacion } from '../components/dashboard/ModalErrorCancelacion'; // Importa el nuevo modal
 import './DashboardAdmin.css';
 
 
@@ -60,6 +62,11 @@ export const DashboardAdmin = () => {
   const [editClassModal, setEditClassModal] = useState({ isOpen: false, data: null });
   const [deleteHorarioConfirmation, setDeleteHorarioConfirmation] = useState({ isOpen: false, data: null });
   const [showSuccessModal, setShowSuccessModal] = useState({ isOpen: false, mensaje: '' });
+  
+  // ESTADO DE LA CONTRASEÑA
+  const [passwordPrompt, setPasswordPrompt] = useState({ isOpen: false, actionToExecute: null });
+  // Cerca de tus otros estados
+const [error24h, setError24h] = useState({ isOpen: false, horas: 0 });
 
   const handleLogout = () => {
     setIsLogoutModalOpen(false);
@@ -221,15 +228,12 @@ export const DashboardAdmin = () => {
         initialData={userForm.data}
         onClose={() => setUserForm({ isOpen: false, type: 'alumno', mode: 'add', data: null })}
         onSave={(datosRecolectados) => {
-          // 1. Decidimos qué frase poner dependiendo de si estamos agregando o editando
           const textoExito = userForm.mode === 'add' 
             ? `Se registró correctamente el nuevo ${userForm.type}: ` 
             : `Se guardaron los cambios para el ${userForm.type}: `;
 
-          // 2. Cerramos el formulario
           setUserForm({ isOpen: false, type: 'alumno', mode: 'add', data: null });
           
-          // 3. Abrimos el modal de éxito con la frase completa + el nombre en negritas
           setShowSuccessModal({ 
             isOpen: true, 
             mensaje: <>{textoExito} <strong style={{color: '#4b5563'}}>{datosRecolectados.nombre}</strong>.</>
@@ -237,24 +241,24 @@ export const DashboardAdmin = () => {
         }}
       />
 
-      {/* MODAL DE ÉXITO REUTILIZABLE */}
-      <ModalExito 
-        isOpen={showSuccessModal.isOpen}
-        mensaje={showSuccessModal.mensaje}
-        onClose={() => setShowSuccessModal({ isOpen: false, mensaje: '' })}
-      />
-
+      {/* Modal para eliminar Usuario */}
       <ModalEliminar 
         isOpen={deleteUser.isOpen}
-        // Pasamos el tipo dinámico (ej: Usuario para alumnos/maestros, o Curso)
-        dynamicType={deleteUser.data?.rol ? 'Usuario' : 'Curso'} 
-        // Pasamos el nombre dinámico (ej: carlos maximiliano)
-        dynamicName={deleteUser.data?.nombre}
+        itemType="usuario"
+        itemName={deleteUser.data?.nombre}
         onClose={() => setDeleteUser({ isOpen: false, step: 1, type: 'alumno', data: null })}
         onConfirm={() => {
-          console.log(`Eliminando ${deleteUser.type} en Oracle...`, deleteUser.data?.id);
-          // Aquí harás el DELETE real a Spring Boot
+          // 1. Cerramos la alerta
           setDeleteUser({ isOpen: false, step: 1, type: 'alumno', data: null });
+          
+          // 2. Abrimos la contraseña
+          setPasswordPrompt({
+            isOpen: true,
+            actionToExecute: () => {
+              console.log(`Eliminando usuario en Oracle...`, deleteUser.data?.id);
+              setShowSuccessModal({ isOpen: true, mensaje: <>El usuario se ha eliminado con <strong style={{color: '#4b5563'}}>éxito</strong>.</> });
+            }
+          });
         }}
       />
       
@@ -270,17 +274,6 @@ export const DashboardAdmin = () => {
         }}
       />
 
-      <ModalEliminar 
-        isOpen={deleteUser.isOpen}
-        itemType="usuario"
-        itemName={deleteUser.data?.nombre}
-        onClose={() => setDeleteUser({ isOpen: false, step: 1, type: 'alumno', data: null })}
-        onConfirm={() => {
-          console.log(`Eliminando usuario...`, deleteUser.data?.id);
-          setDeleteUser({ isOpen: false, step: 1, type: 'alumno', data: null });
-        }}
-      />
-
       {/* Modal para eliminar Curso */}
       <ModalEliminar 
         isOpen={deleteCourse.isOpen}
@@ -288,8 +281,17 @@ export const DashboardAdmin = () => {
         itemName={deleteCourse.data?.nombre}
         onClose={() => setDeleteCourse({ isOpen: false, data: null })}
         onConfirm={() => {
-          console.log("Eliminando curso...", deleteCourse.data?.id);
+          // 1. Cerramos la alerta
           setDeleteCourse({ isOpen: false, data: null });
+
+          // 2. Abrimos la contraseña
+          setPasswordPrompt({
+            isOpen: true,
+            actionToExecute: () => {
+              console.log("Eliminando curso en Oracle...", deleteCourse.data?.id);
+              setShowSuccessModal({ isOpen: true, mensaje: <>El curso se ha eliminado con <strong style={{color: '#4b5563'}}>éxito</strong>.</> });
+            }
+          });
         }}
       />
 
@@ -298,16 +300,13 @@ export const DashboardAdmin = () => {
         onClose={() => setIsAddScheduleModalOpen(false)}
         onSave={(datosHorario) => { 
           console.log("Guardando horario nuevo...", datosHorario); 
-          // 1. Cerramos el modal
           setIsAddScheduleModalOpen(false); 
-          // 2. Mostramos el éxito
           setShowSuccessModal({ 
             isOpen: true, 
             mensaje: <>El nuevo horario se ha registrado con <strong style={{color: '#4b5563'}}>éxito</strong>.</>
           });
         }}
       />
-
     
       <ModalAccionHorario 
         isOpen={actionModal.isOpen}
@@ -318,25 +317,30 @@ export const DashboardAdmin = () => {
           setEditClassModal({ isOpen: true, data: actionModal.data });
         }}
         onDelete={() => {
-          // 1. Cerramos el modal de "Seleccionar acción"
           setActionModal({ isOpen: false, data: null });
-          
-          // 2.  Abrimos la nueva confirmación de horario idéntica al Figma 
           setDeleteHorarioConfirmation({ isOpen: true, data: actionModal.data });
         }}
       />
 
-            <ModalConfirmarEliminarHorario 
+      {/* Modal de confirmación para eliminar horario */}
+      <ModalConfirmarEliminarHorario 
         isOpen={deleteHorarioConfirmation.isOpen}
         datosHorario={deleteHorarioConfirmation.data}
         onClose={() => setDeleteHorarioConfirmation({ isOpen: false, data: null })}
         onConfirm={() => {
-          console.log("Eliminando horario en Oracle...", deleteHorarioConfirmation.data);
-          // Aquí harás el DELETE real a Spring Boot
+          // 1. Cerramos la alerta amarilla
           setDeleteHorarioConfirmation({ isOpen: false, data: null });
+
+          // 2. Abrimos la contraseña
+          setPasswordPrompt({
+            isOpen: true,
+            actionToExecute: () => {
+              console.log("Eliminando horario en Oracle...", deleteHorarioConfirmation.data);
+              setShowSuccessModal({ isOpen: true, mensaje: <>El horario se ha eliminado con <strong style={{color: '#4b5563'}}>éxito</strong>.</> });
+            }
+          });
         }}
       />
-
     
       <ModalEditarHorario 
         isOpen={editClassModal.isOpen}
@@ -344,9 +348,7 @@ export const DashboardAdmin = () => {
         onClose={() => setEditClassModal({ isOpen: false, data: null })}
         onSave={(nuevosDatos) => {
           console.log("Guardando cambios en el horario...", nuevosDatos);
-          // 1. Cerramos el modal de edición
           setEditClassModal({ isOpen: false, data: null });
-          // 2. Mostramos el éxito
           setShowSuccessModal({ 
             isOpen: true, 
             mensaje: <>El horario se ha modificado con <strong style={{color: '#4b5563'}}>éxito</strong>.</>
@@ -354,6 +356,42 @@ export const DashboardAdmin = () => {
         }}
       />
 
+     
+      <ModalConfirmarPassword
+        isOpen={passwordPrompt.isOpen}
+        onClose={() => setPasswordPrompt({ isOpen: false, actionToExecute: null })}
+        onConfirm={() => {
+          // --- SIMULACIÓN DE VALIDACIÓN DE 24 HORAS ---
+          // Supongamos que calculamos la diferencia y nos da 8 horas
+          const horasFaltantes = 8; 
+
+          if (horasFaltantes < 24) {
+            // Caso ERROR: Menos de 24 horas
+            setPasswordPrompt({ isOpen: false, actionToExecute: null });
+            setError24h({ isOpen: true, horas: horasFaltantes });
+          } else {
+            // Caso ÉXITO: Más de 24 horas, procedemos a borrar
+            if (passwordPrompt.actionToExecute) {
+              passwordPrompt.actionToExecute();
+            }
+            setPasswordPrompt({ isOpen: false, actionToExecute: null });
+          }
+        }}
+      />
+
+      {/* MODAL DE ERROR 24H */}
+      <ModalErrorCancelacion 
+        isOpen={error24h.isOpen}
+        horasRestantes={error24h.horas}
+        onClose={() => setError24h({ isOpen: false, horas: 0 })}
+      />
+
+      
+      <ModalExito 
+        isOpen={showSuccessModal.isOpen}
+        mensaje={showSuccessModal.mensaje}
+        onClose={() => setShowSuccessModal({ isOpen: false, mensaje: '' })}
+      />
 
     </DashboardLayout>
   );
