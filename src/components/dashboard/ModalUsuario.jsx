@@ -97,7 +97,7 @@ export const ModalUsuario = ({ isOpen, onClose, onSave, type = 'alumno', mode = 
               </div>
               <div className="form-row">
                 <div className="form-group">
-                  <label>Género</label>
+                  <label>Género*</label>
                   <select name="genero" className="form-select">
                     <option value="">Selecciona una opción</option>
                     <option value="Masculino">Masculino</option>
