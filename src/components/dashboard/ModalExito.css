@@ -1,0 +1,82 @@
+/* ======================================================= */
+/* ESTILOS DEL MODAL DE ÉXITO (POST-EDICIÓN)              */
+/* ======================================================= */
+
+.modal-content-success {
+  background: white;
+  width: 450px;
+  max-width: 90vw;
+  padding: 3rem; /* Padding generoso */
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* El círculo verde con la alerta */
+.success-icon-wrapper {
+  width: 64px;
+  height: 64px;
+  background-color: #f0fdf4; /* Verde muy claro de fondo */
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+/* Títulos centrados */
+.success-title {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.4rem;
+  color: #111827;
+  font-weight: 800;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.success-subtitle {
+  margin: 0 0 3rem 0;
+  color: #6b7280;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+/* Botones grandes centrados uno encima del otro (column) */
+.success-actions {
+  display: flex;
+  flex-direction: column; /* Un botón encima del otro */
+  gap: 1rem;
+  width: 100%;
+}
+
+/* Botón Confirmar Azul Grande */
+.btn-confirm-success {
+  width: 100%;
+  padding: 1.1rem; /* Padding extra grande */
+  background-color: #0082a9; /* Azul Figma */
+  border: none;
+  color: white;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: filter 0.2s;
+}
+.btn-confirm-success:hover { filter: brightness(0.9); }
+
+/* Botón Cerrar Blanco/Azul Grande */
+.btn-close-success {
+  width: 100%;
+  padding: 1.1rem; /* Padding extra grande */
+  background-color: white;
+  color: #0082a9; /* Azul Figma */
+  border: 1px solid #e2e8f0; /* Borde gris Figma */
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.btn-close-success:hover { background-color: #f1f5f9; }

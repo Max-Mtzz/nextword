@@ -1,0 +1,107 @@
+/* ======================================================= */
+/* ESTILOS DEL MODAL GENERAL DE ELIMINAR (Cursos/Usuarios) */
+/* ======================================================= */
+
+.modal-content-delete-general {
+  background: white;
+  width: 420px;
+  max-width: 90vw;
+  padding: 2.5rem;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.alert-icon-wrapper-general {
+  width: 64px;
+  height: 64px;
+  background-color: #fef2f2;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.delete-general-title {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.4rem;
+  color: #111827;
+  font-weight: 800;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.delete-general-subtitle {
+  margin: 0 0 1.5rem 0;
+  color: #6b7280;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.delete-general-details {
+  background-color: #f8fafc;
+  border-radius: 12px;
+  padding: 1.2rem 1.5rem;
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.detail-row-general {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95rem;
+}
+
+.detail-row-general span {
+  color: #475569;
+  font-weight: 600;
+}
+
+.detail-row-general strong {
+  color: #1f2937;
+  font-weight: 800;
+}
+
+.delete-general-actions {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+}
+
+.btn-cancel-general {
+  flex: 1;
+  padding: 0.9rem;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  color: #4b5563;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-cancel-general:hover {
+  background-color: #f3f4f6;
+}
+
+.btn-confirm-general {
+  flex: 1;
+  padding: 0.9rem;
+  background-color: #be123c; /* Rojo oscuro Figma */
+  border: none;
+  color: white;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: filter 0.2s;
+}
+
+.btn-confirm-general:hover {
+  filter: brightness(0.9);
+}

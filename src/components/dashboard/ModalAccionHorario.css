@@ -1,0 +1,101 @@
+.modal-content-accion {
+  background: white;
+  padding: 1.5rem 2.5rem 2.5rem 2.5rem;
+  border-radius: 12px;
+  width: 450px;
+  max-width: 90vw;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header-accion {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.modal-header-accion h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #1f2937;
+  font-weight: bold;
+}
+
+.accion-subtitle {
+  text-align: center;
+  color: #6b7280;
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+}
+
+/* La cajita gris con la información */
+.accion-info-box {
+  background-color: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.accion-info-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #1f2937;
+  margin-bottom: 1.2rem;
+  font-size: 0.95rem;
+}
+
+.accion-info-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.8rem;
+  font-size: 0.9rem;
+}
+.accion-info-row:last-child { margin-bottom: 0; }
+.accion-info-row span { color: #9ca3af; }
+.accion-info-row strong { color: #1f2937; }
+
+/* Los botones */
+.accion-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.btn-modificar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.8rem;
+  background-color: #0082a9;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: filter 0.2s;
+}
+
+.btn-modificar:hover { filter: brightness(0.9); }
+
+/* Botón de eliminar estilo Figma */
+.btn-eliminar-accion {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.8rem;
+  background-color: #fef2f2; /* Rojo muy clarito de fondo */
+  color: #ef4444; /* Texto rojo */
+  border: 1px solid #fecaca; /* Borde rojo claro */
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-eliminar-accion:hover { background-color: #fee2e2; }

@@ -4,10 +4,13 @@ import { ActionCard } from '../components/dashboard/ActionCard';
 import { ConfirmModal } from '../components/ui/ConfirmModal';
 import { TablaHorarios } from '../components/dashboard/TablaHorarios';
 import { ModalAñadirHorario } from '../components/dashboard/ModalAñadirHorario';
-import { ModalEliminar } from '../components/dashboard/ModalEliminar';
 import { ModalEditarHorario } from '../components/dashboard/ModalEditarHorario';
 import { CalendarioMaestro } from '../components/dashboard/CalendarioMaestro';
+import { ModalExito } from '../components/dashboard/ModalExito';
+import { ModalConfirmarEliminarHorario } from '../components/dashboard/ModalConfirmarEliminarHorario';
+import { ModalAccionHorario } from '../components/dashboard/ModalAccionHorario';
 import { useNavigate } from 'react-router-dom';
+
 
 // Assets
 import relojRellenoIcon from '../assets/reloj_relleno.svg';
@@ -31,14 +34,15 @@ const misCursosData = [
 
 export const DashboardMaestro = () => {
   const [activeView, setActiveView] = useState('main'); 
-  // FALTABA ESTE ESTADO
   const [selectedCourse, setSelectedCourse] = useState(null); 
   
   // Estados de los Modales extraídos
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isAddScheduleModalOpen, setIsAddScheduleModalOpen] = useState(false);
-  const [deleteData, setDeleteData] = useState({ isOpen: false, item: null });
   const [editClassModal, setEditClassModal] = useState({ isOpen: false, data: null });
+  const [showSuccessModal, setShowSuccessModal] = useState({ isOpen: false, mensaje: '' });
+  const [deleteHorarioConfirmation, setDeleteHorarioConfirmation] = useState({ isOpen: false, data: null });
+  const [actionModal, setActionModal] = useState({ isOpen: false, data: null });
 
   const navigate = useNavigate();
 
@@ -106,7 +110,8 @@ export const DashboardMaestro = () => {
           onBack={() => { setActiveView('courses'); setSelectedCourse(null); }}
           onAddSchedule={() => setIsAddScheduleModalOpen(true)}
           onEventClick={(datosHorario) => {
-            setEditClassModal({ isOpen: true, data: datosHorario }); 
+            // Cuando hacen clic en el calendario, se abre el modal "Seleccionar Acción"
+            setActionModal({ isOpen: true, data: datosHorario }); 
           }}
         />
       )}
@@ -127,7 +132,19 @@ export const DashboardMaestro = () => {
           <TablaHorarios 
             data={assignedCoursesData} 
             onEdit={(item) => setEditClassModal({ isOpen: true, data: item })} 
-            onDelete={(item) => setDeleteData({ isOpen: true, item })} 
+            onDelete={(item) => {
+              // 👇 AQUÍ ESTÁ LA CORRECCIÓN PRINCIPAL 👇
+              // Redirigimos al modal de horario (el amarillo) y adaptamos los nombres
+              setDeleteHorarioConfirmation({ 
+                isOpen: true, 
+                data: {
+                  profesor: 'Diego Salazar', // Nombre del maestro
+                  dia: item.fecha,
+                  hora: item.hora,
+                  curso: item.curso
+                }
+              });
+            }} 
           />
         </>
       )}
@@ -148,16 +165,28 @@ export const DashboardMaestro = () => {
       <ModalAñadirHorario 
         isOpen={isAddScheduleModalOpen}
         onClose={() => setIsAddScheduleModalOpen(false)}
-        onSave={() => { console.log("Guardando..."); setIsAddScheduleModalOpen(false); }}
+        onSave={(datosHorario) => { 
+          console.log("Guardando horario nuevo del maestro...", datosHorario); 
+          setIsAddScheduleModalOpen(false); 
+          setShowSuccessModal({ 
+            isOpen: true, 
+            mensaje: <>El nuevo horario se ha registrado con <strong style={{color: '#4b5563'}}>éxito</strong>.</>
+          });
+        }}
       />
 
-      <ModalEliminar 
-        isOpen={deleteData.isOpen}
-        itemName={deleteData.item?.curso}
-        onClose={() => setDeleteData({ isOpen: false, item: null })}
-        onConfirm={() => {
-          console.log("Eliminando desde Spring Boot...", deleteData.item.id);
-          setDeleteData({ isOpen: false, item: null });
+      <ModalAccionHorario 
+        isOpen={actionModal.isOpen}
+        datos={actionModal.data}
+        onClose={() => setActionModal({ isOpen: false, data: null })}
+        onEdit={() => {
+          setActionModal({ isOpen: false, data: null });
+          setEditClassModal({ isOpen: true, data: actionModal.data });
+        }}
+        onDelete={() => {
+          // Cerramos este recuadro y abrimos la alerta especial de eliminar horario
+          setActionModal({ isOpen: false, data: null });
+          setDeleteHorarioConfirmation({ isOpen: true, data: actionModal.data });
         }}
       />
 
@@ -168,7 +197,33 @@ export const DashboardMaestro = () => {
         onSave={(nuevosDatos) => {
           console.log("Guardando cambios en el horario...", nuevosDatos);
           setEditClassModal({ isOpen: false, data: null });
+          setShowSuccessModal({ 
+            isOpen: true, 
+            mensaje: <>El horario se ha modificado con <strong style={{color: '#4b5563'}}>éxito</strong>.</>
+          });
         }}
+      />
+
+      <ModalConfirmarEliminarHorario 
+        isOpen={deleteHorarioConfirmation.isOpen}
+        datosHorario={deleteHorarioConfirmation.data}
+        onClose={() => setDeleteHorarioConfirmation({ isOpen: false, data: null })}
+        onConfirm={() => {
+          console.log("Eliminando horario en Oracle...", deleteHorarioConfirmation.data);
+          setDeleteHorarioConfirmation({ isOpen: false, data: null });
+          
+          // Opcional: También le mostramos éxito al eliminar
+          setShowSuccessModal({ 
+            isOpen: true, 
+            mensaje: <>El horario se ha eliminado con <strong style={{color: '#4b5563'}}>éxito</strong>.</>
+          });
+        }}
+      />
+
+      <ModalExito 
+        isOpen={showSuccessModal.isOpen}
+        mensaje={showSuccessModal.mensaje}
+        onClose={() => setShowSuccessModal({ isOpen: false, mensaje: '' })}
       />
     </DashboardLayout>
   );
