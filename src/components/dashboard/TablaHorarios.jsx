@@ -10,7 +10,6 @@ export const TablaHorarios = ({ data, onEdit, onDelete }) => {
         <thead>
           <tr>
             <th>Curso</th>
-            <th>Modalidad</th>
             <th>Fecha</th>
             <th>Hora</th>
             <th style={{ textAlign: 'center' }}>Acciones</th>
@@ -20,7 +19,6 @@ export const TablaHorarios = ({ data, onEdit, onDelete }) => {
           {data.map((item) => (
             <tr key={item.id}>
               <td className="course-name-cell">{item.curso}</td>
-              <td>{item.modalidad}</td>
               <td>{item.fecha}</td>
               <td>{item.hora}</td>
               <td>

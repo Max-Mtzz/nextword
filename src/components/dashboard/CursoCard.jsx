@@ -12,13 +12,15 @@ export const CursoCard = ({ curso, onClick, onEdit, onDelete }) => {
   return (
     <div className="course-card-simple" onClick={() => onClick(curso)}>
       
-      {/* Botón de los tres puntos */}
-      <button className="dots-btn-simple" onClick={toggleMenu}>
-        <img src={menuIcon} alt="Opciones" />
-      </button>
+      {/* Botón de los tres puntos: SOLO SE MUESTRA SI RECIBE LA PROPIEDAD onEdit */}
+      {onEdit && (
+        <button className="dots-btn-simple" onClick={toggleMenu}>
+          <img src={menuIcon} alt="Opciones" />
+        </button>
+      )}
 
-      {/* Menú Desplegable */}
-      {isMenuOpen && (
+      {/* Menú Desplegable: SOLO SE MUESTRA SI HAY onEdit Y ESTÁ ABIERTO */}
+      {onEdit && isMenuOpen && (
         <div className="dropdown-simple" onMouseLeave={() => setIsMenuOpen(false)}>
           <button 
             className="dropdown-item-text" 
@@ -26,12 +28,14 @@ export const CursoCard = ({ curso, onClick, onEdit, onDelete }) => {
           >
             Editar
           </button>
-          <button 
-            className="dropdown-item-text" 
-            onClick={(e) => { e.stopPropagation(); setIsMenuOpen(false); onDelete(curso); }}
-          >
-            Eliminar
-          </button>
+          {onDelete && (
+            <button 
+              className="dropdown-item-text" 
+              onClick={(e) => { e.stopPropagation(); setIsMenuOpen(false); onDelete(curso); }}
+            >
+              Eliminar
+            </button>
+          )}
         </div>
       )}
 

@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './ModalCurso.css';
 import nubeIcon from '../../assets/nube.svg';
 import imagenIcon from '../../assets/imagen.svg';
-// Importa los iconos para los botones de la vista previa
-import recargarIcon from '../../assets/recargar.svg';
 import basuraIcon from '../../assets/bote_basura.svg';
 
 export const ModalCurso = ({ isOpen, onClose, onSave, mode = 'add', initialData = null }) => {
   const [formData, setFormData] = useState({ nombre: '', imagen: null });
-  // Estado para controlar si mostramos la vista previa
   const [previewImage, setPreviewImage] = useState(null);
+  
+  // Referencia para el input de archivo oculto
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     if (initialData && mode === 'edit') {
-      setFormData(initialData);
-      // Si estamos editando y ya tiene imagen (ej. la bandera), la mostramos en la vista previa
+      // initialData trae { nombre: "Inglés", flag: "url_de_cloudinary" }
+      setFormData({ nombre: initialData.nombre, imagen: null });
       setPreviewImage(initialData.flag || null);
     } else {
       setFormData({ nombre: '', imagen: null });
@@ -29,16 +29,30 @@ export const ModalCurso = ({ isOpen, onClose, onSave, mode = 'add', initialData 
     onSave(formData);
   };
 
-  // Función para simular que subimos una imagen
-  const handleSimularSubida = () => {
-    // Aquí, cuando conectemos, leeremos el archivo real. Por ahora, ponemos una imagen de prueba.
-    setPreviewImage('https://flagcdn.com/gb.svg'); // Una bandera de prueba
-    setFormData({ ...formData, imagen: 'archivo_simulado.jpg' });
+  // Cuando el usuario hace clic en "Subir imagen", simulamos un clic en el input de archivo oculto
+  const handleBotonSubirClick = () => {
+    fileInputRef.current.click();
+  };
+
+  // Cuando el usuario selecciona un archivo
+  const handleArchivoSeleccionado = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // 1. Guardamos el archivo físico para enviarlo al backend
+      setFormData({ ...formData, imagen: file });
+      
+      // 2. Creamos una URL temporal para mostrar la vista previa
+      const objectUrl = URL.createObjectURL(file);
+      setPreviewImage(objectUrl);
+    }
   };
 
   const handleEliminarImagen = () => {
     setPreviewImage(null);
     setFormData({ ...formData, imagen: null });
+    if (fileInputRef.current) {
+        fileInputRef.current.value = ""; // Limpiamos el input
+    }
   };
 
   return (
@@ -56,7 +70,7 @@ export const ModalCurso = ({ isOpen, onClose, onSave, mode = 'add', initialData 
             <input 
               type="text" 
               className="form-control" 
-              value={formData.nombre || ''}
+              value={formData.nombre}
               onChange={(e) => setFormData({...formData, nombre: e.target.value})}
               placeholder="Ej. Inglés Intermedio B1" 
               required 
@@ -66,13 +80,21 @@ export const ModalCurso = ({ isOpen, onClose, onSave, mode = 'add', initialData 
           <div className="form-group">
             <label>Imagen representativa del curso*</label>
             
-            {/* Si NO hay imagen, mostramos la zona de subida (La caja punteada) */}
+            {/* Input oculto para subir archivos */}
+            <input 
+                type="file" 
+                ref={fileInputRef} 
+                style={{ display: 'none' }} 
+                accept="image/jpeg, image/png, image/jpg"
+                onChange={handleArchivoSeleccionado}
+            />
+
             {!previewImage && (
               <>
                 <div className="upload-area">
                   <img src={nubeIcon} alt="Subir" className="nube-icon" />
-                  <p>Arrastra y suelta tu imagen aquí<br/>o haz clic para seleccionar</p>
-                  <button type="button" className="upload-btn" onClick={handleSimularSubida}>
+                  <p>Haz clic para seleccionar tu imagen</p>
+                  <button type="button" className="upload-btn" onClick={handleBotonSubirClick}>
                     <img src={imagenIcon} alt="Icono imagen" style={{width: '16px', filter: 'brightness(0) invert(1)'}} /> Subir imagen
                   </button>
                 </div>
@@ -80,7 +102,6 @@ export const ModalCurso = ({ isOpen, onClose, onSave, mode = 'add', initialData 
               </>
             )}
 
-            {/* Si SÍ hay imagen, mostramos la VISTA PREVIA */}
             {previewImage && (
               <div className="preview-container">
                 <span className="preview-label">Vista previa</span>
@@ -88,7 +109,6 @@ export const ModalCurso = ({ isOpen, onClose, onSave, mode = 'add', initialData 
                   <img src={previewImage} alt="Vista previa" className="preview-image-actual" />
                   
                   <div className="preview-actions">
-    
                     <button type="button" className="btn-eliminar-preview" onClick={handleEliminarImagen}>
                       <img src={basuraIcon} alt="Eliminar" style={{width: '14px'}} />
                       Eliminar
@@ -97,7 +117,6 @@ export const ModalCurso = ({ isOpen, onClose, onSave, mode = 'add', initialData 
                 </div>
               </div>
             )}
-            
           </div>
 
           <div className="modal-footer-curso">

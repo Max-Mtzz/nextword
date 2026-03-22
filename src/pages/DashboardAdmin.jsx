@@ -22,13 +22,7 @@ import './DashboardAdmin.css';
 import hatIcon from '../assets/hat_icon.svg';
 import pencilIcon from '../assets/pencil_icon.svg';
 import bookIcon2 from '../assets/book_icon_2.svg';
-import chinaIcon from '../assets/china_icon.svg';
-import usaIcon from '../assets/china_icon.svg';
 
-const cursosData = [
-  { id: 1, nombre: 'Inglés', flag: usaIcon },
-  { id: 2, nombre: 'Chino', flag: chinaIcon },
-];
 
 export const DashboardAdmin = () => {
   const [activeView, setActiveView] = useState('main');
@@ -39,6 +33,8 @@ export const DashboardAdmin = () => {
 
   const [alumnos, setAlumnos] = useState([]);
   const [maestros, setMaestros] = useState([]);
+  const [cursos, setCursos] = useState([]); // <-- NUEVO ESTADO PARA CURSOS
+  const [horariosCurso, setHorariosCurso] = useState([]);
 
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
@@ -70,9 +66,65 @@ export const DashboardAdmin = () => {
     }
   };
 
+  // NUEVA FUNCIÓN PARA OBTENER LOS CURSOS DEL BACKEND
+  const fetchCursos = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/api/cursos', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      // El backend devuelve { id, nombre, urlImagen, fechaCreacion }
+      // Vamos a mapearlo para que el Frontend lo entienda como { id, nombre, flag }
+      const cursosMapeados = response.data.map(curso => ({
+        id: curso.id,
+        nombre: curso.nombre,
+        flag: curso.urlImagen // Usamos la URL de Cloudinary como la bandera
+      }));
+      setCursos(cursosMapeados);
+    } catch (error) {
+      console.error("Error al cargar cursos:", error);
+    }
+  };
+
+  const fetchHorariosDeCurso = async (cursoId) => {
+    try {
+      const response = await axios.get(`http://localhost:8080/api/horarios/curso/${cursoId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      // Mapeamos los datos para que el CalendarioSemanario los entienda fácil
+      const horariosMapeados = response.data.map(h => {
+        // Formatear fecha y hora para la vista
+        const fechaObj = new Date(h.fechaHoraClase);
+        const diaStr = fechaObj.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
+        const horaInicioStr = fechaObj.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+        const horaFinStr = new Date(h.fechaHoraFin).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+
+        return {
+          id: h.id,
+          dia: diaStr,
+          hora: `${horaInicioStr} - ${horaFinStr}`,
+          profesor: h.docente?.fullName || h.docente?.nombre || 'Docente',
+          estado: h.estado,
+          datosCrudos: h // Guardamos la info original por si la ocupamos
+        };
+      });
+      setHorariosCurso(horariosMapeados);
+    } catch (error) {
+      console.error("Error al cargar horarios:", error);
+    }
+  };
+
   useEffect(() => {
     fetchUsuarios();
+    fetchCursos();
   }, []);
+
+  // --- NUEVO: Detectar cuando cambias de curso para traer sus horarios ---
+  useEffect(() => {
+    if (selectedCourse && selectedCourse.id) {
+      setHorariosCurso([]); // Limpiamos la vista para que no se vean los anteriores mientras carga
+      fetchHorariosDeCurso(selectedCourse.id);
+    }
+  }, [selectedCourse]);
 
   const handleLogout = () => {
     setIsLogoutModalOpen(false);
@@ -170,7 +222,7 @@ export const DashboardAdmin = () => {
             </div>
           </div>
           <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', marginTop: '2rem' }}>
-            {cursosData.map((curso) => (
+            {cursos.map((curso) => (
               <CursoCard
                 key={curso.id}
                 curso={curso}
@@ -186,9 +238,16 @@ export const DashboardAdmin = () => {
       {activeView === 'calendar' && (
         <CalendarioSemanario
           curso={selectedCourse}
+          horarios={horariosCurso}
           onBack={() => { setActiveView('courses'); setSelectedCourse(null); }}
           onAddSchedule={() => setIsAddScheduleModalOpen(true)}
-          onEventClick={(datosHorario) => { setActionModal({ isOpen: true, data: datosHorario }); }}
+          // --- CORRECCIÓN: Le inyectamos el nombre del curso al modal ---
+          onEventClick={(datosHorario) => {
+            setActionModal({
+              isOpen: true,
+              data: { ...datosHorario, curso: selectedCourse?.nombre }
+            });
+          }}
         />
       )}
 
@@ -285,7 +344,98 @@ export const DashboardAdmin = () => {
         }}
       />
 
-      <ModalCurso isOpen={courseForm.isOpen} mode={courseForm.mode} initialData={courseForm.data} onClose={() => setCourseForm({ isOpen: false, mode: 'add', data: null })} onSave={() => setCourseForm({ isOpen: false, mode: 'add', data: null })} />
+      {/* --- MODAL PARA ELIMINAR CURSOS --- */}
+      <ModalEliminar
+        isOpen={deleteCourse.isOpen}
+        itemType="curso"
+        itemName={deleteCourse.data?.nombre}
+        onClose={() => setDeleteCourse({ isOpen: false, data: null })}
+        onConfirm={() => {
+          const cursoAEliminar = deleteCourse.data;
+          // 1. Cerramos el modal de advertencia rojo
+          setDeleteCourse({ isOpen: false, data: null });
+
+          // 2. Abrimos el modal para pedir la contraseña del administrador (igual que con los usuarios)
+          setPasswordPrompt({
+            isOpen: true,
+            type: 'curso',
+            actionToExecute: async () => {
+              try {
+                // 3. Si la contraseña es correcta, disparamos la petición DELETE al backend
+                await axios.delete(`http://localhost:8080/api/cursos/${cursoAEliminar.id}`, {
+                  headers: { Authorization: `Bearer ${token}` }
+                });
+
+                // 4. Volvemos a pedir los cursos para que desaparezca de la pantalla
+                await fetchCursos();
+
+                // 5. Mostramos el mensaje de éxito
+                setShowSuccessModal({
+                  isOpen: true,
+                  mensaje: <>El curso se ha eliminado con <strong style={{ color: '#4b5563' }}>éxito</strong>.</>
+                });
+              } catch (error) {
+                console.error("Error eliminando el curso:", error);
+                alert("Error al eliminar el curso.");
+              }
+            }
+          });
+        }}
+      />
+
+      <ModalCurso
+        isOpen={courseForm.isOpen}
+        mode={courseForm.mode}
+        initialData={courseForm.data}
+        onClose={() => setCourseForm({ isOpen: false, mode: 'add', data: null })}
+        onSave={async (formDataDelHijo) => {
+          // formDataDelHijo es lo que nos manda el componente ModalCurso
+          // Contiene { nombre: "Inglés", imagen: ArchivoFisico }
+
+          try {
+            // Creamos un objeto FormData real para enviar archivos por Axios
+            const formDataParaAxios = new FormData();
+            formDataParaAxios.append('nombre', formDataDelHijo.nombre);
+
+            // Si hay un archivo de imagen, lo adjuntamos
+            if (formDataDelHijo.imagen instanceof File) {
+              formDataParaAxios.append('imagen', formDataDelHijo.imagen);
+            }
+
+            const config = {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data' // <-- IMPORTANTÍSIMO PARA SUBIR ARCHIVOS
+              }
+            };
+
+            if (courseForm.mode === 'add') {
+              // Validamos que sí o sí haya mandado una imagen al crear
+              if (!formDataDelHijo.imagen) {
+                alert("Debes seleccionar una imagen para crear el curso.");
+                return;
+              }
+              await axios.post('http://localhost:8080/api/cursos', formDataParaAxios, config);
+            } else {
+              // Modo edición
+              await axios.put(`http://localhost:8080/api/cursos/${courseForm.data.id}`, formDataParaAxios, config);
+            }
+
+            // Recargamos los cursos y cerramos el modal
+            await fetchCursos();
+            setCourseForm({ isOpen: false, mode: 'add', data: null });
+
+            setShowSuccessModal({
+              isOpen: true,
+              mensaje: <>El curso se ha {courseForm.mode === 'add' ? 'creado' : 'actualizado'} con <strong style={{ color: '#4b5563' }}>éxito</strong>.</>
+            });
+
+          } catch (error) {
+            console.error("Error al guardar el curso:", error);
+            alert("Hubo un error al guardar el curso. Revisa la consola.");
+          }
+        }}
+      />
 
       {/* --- CORRECCIÓN EN LA CONTRASEÑA --- */}
       <ModalConfirmarPassword
@@ -307,6 +457,137 @@ export const DashboardAdmin = () => {
           } catch (error) {
             throw new Error("Contraseña incorrecta");
           }
+        }}
+      />
+
+      {/* --- MODAL PARA AÑADIR HORARIO --- */}
+      <ModalAñadirHorario
+        isOpen={isAddScheduleModalOpen}
+        maestros={maestros} // Pasamos la lista de maestros
+        onClose={() => setIsAddScheduleModalOpen(false)}
+        onSave={async (datosHorarioRecopilados) => {
+          // --- NUEVA VALIDACIÓN DE DUPLICADOS ---
+          const yaExiste = horariosCurso.some(horario => {
+            // Comparamos el ID del maestro y la fecha/hora exacta de inicio
+            return horario.datosCrudos.docente.id === datosHorarioRecopilados.docente.id &&
+              horario.datosCrudos.fechaHoraClase === datosHorarioRecopilados.fechaHoraClase;
+          });
+
+          if (yaExiste) {
+            alert("Este maestro ya tiene una clase programada exactamente a esa misma hora para este curso.");
+            return; // Detenemos la ejecución para que no se guarde
+          }
+
+          try {
+            // Unimos los datos del modal con el ID del curso seleccionado
+            const payload = {
+              ...datosHorarioRecopilados,
+              curso: { id: selectedCourse.id }
+            };
+
+            await axios.post('http://localhost:8080/api/horarios', payload, {
+              headers: { Authorization: `Bearer ${token}` }
+            });
+
+            // Si salió bien: cerramos, recargamos la lista y mostramos éxito
+            setIsAddScheduleModalOpen(false);
+            await fetchHorariosDeCurso(selectedCourse.id);
+
+            setShowSuccessModal({
+              isOpen: true,
+              mensaje: <>El horario se ha añadido con <strong style={{ color: '#4b5563' }}>éxito</strong>.</>
+            });
+
+          } catch (error) {
+            console.error("Error al crear horario:", error);
+            alert("Hubo un error al guardar el horario.");
+          }
+        }}
+      />
+
+      {/* 1. MODAL DE ACCIONES (Editar o Borrar) */}
+      <ModalAccionHorario
+        isOpen={actionModal.isOpen}
+        datos={actionModal.data}
+        onClose={() => setActionModal({ isOpen: false, data: null })}
+        onEdit={() => {
+          // Cerramos este y abrimos el de edición pasándole los datos
+          setEditClassModal({ isOpen: true, data: actionModal.data });
+          setActionModal({ isOpen: false, data: null });
+        }}
+        onDelete={() => {
+          // Cerramos este y abrimos el de confirmación roja pasándole los datos
+          setDeleteHorarioConfirmation({ isOpen: true, data: actionModal.data });
+          setActionModal({ isOpen: false, data: null });
+        }}
+      />
+
+      {/* 2. MODAL PARA EDITAR */}
+      <ModalEditarHorario
+        isOpen={editClassModal.isOpen}
+        initialData={editClassModal.data}
+        onClose={() => setEditClassModal({ isOpen: false, data: null })}
+        onSave={async (datosModificados, idHorario) => {
+          try {
+            await axios.put(`http://localhost:8080/api/horarios/${idHorario}`, datosModificados, {
+              headers: { Authorization: `Bearer ${token}` }
+            });
+
+            setEditClassModal({ isOpen: false, data: null });
+            await fetchHorariosDeCurso(selectedCourse.id); // Recargamos la vista
+
+            setShowSuccessModal({
+              isOpen: true,
+              mensaje: <>El horario se ha modificado con <strong style={{ color: '#4b5563' }}>éxito</strong>.</>
+            });
+          } catch (error) {
+            console.error("Error al editar:", error);
+            // Si el backend escupe el error de las 24 horas del Trigger
+            if (error.response?.data?.includes('24 horas') || error.response?.status === 500) {
+              setEditClassModal({ isOpen: false, data: null });
+              setError24h({ isOpen: true, horas: 24 });
+            } else {
+              alert("Ocurrió un error al modificar el horario.");
+            }
+          }
+        }}
+      />
+
+      {/* 3. MODAL PARA CONFIRMAR ELIMINACIÓN */}
+      <ModalConfirmarEliminarHorario
+        isOpen={deleteHorarioConfirmation.isOpen}
+        datosHorario={deleteHorarioConfirmation.data}
+        onClose={() => setDeleteHorarioConfirmation({ isOpen: false, data: null })}
+        onConfirm={() => {
+          const horarioAEliminar = deleteHorarioConfirmation.data;
+          setDeleteHorarioConfirmation({ isOpen: false, data: null });
+
+          // Pedimos contraseña antes de matar el horario
+          setPasswordPrompt({
+            isOpen: true,
+            type: 'horario',
+            actionToExecute: async () => {
+              try {
+                await axios.delete(`http://localhost:8080/api/horarios/${horarioAEliminar.id}`, {
+                  headers: { Authorization: `Bearer ${token}` }
+                });
+
+                await fetchHorariosDeCurso(selectedCourse.id);
+                setShowSuccessModal({
+                  isOpen: true,
+                  mensaje: <>El horario se ha eliminado con <strong style={{ color: '#4b5563' }}>éxito</strong>.</>
+                });
+              } catch (error) {
+                console.error("Error al eliminar:", error);
+                // Si salta el Trigger de la BD por la regla de las 24hrs / 30 mins
+                if (error.response?.data?.includes('24 horas') || error.response?.status === 500) {
+                  setError24h({ isOpen: true, horas: 24 });
+                } else {
+                  alert("Error al eliminar el horario.");
+                }
+              }
+            }
+          });
         }}
       />
 

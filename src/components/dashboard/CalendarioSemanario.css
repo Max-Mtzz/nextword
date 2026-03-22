@@ -83,71 +83,83 @@
   border-radius: 4px;
 }
 
-.calendar-grid {
-  display: grid;
-  grid-template-columns: 70px repeat(7, 1fr); 
-  gap: 0;
-  min-width: 800px; 
-}
+/* ========================================= */
+/* === NUEVA VISTA DE TARJETAS DINÁMICAS === */
+/* ========================================= */
 
-.cal-header-cell {
-  background-color: #f8fafc;
-  padding: 1rem 0;
+.empty-horarios-msg {
   text-align: center;
-  font-weight: bold;
-  color: #4b5563;
-  border-bottom: 1px solid #e5e7eb;
-  border-right: 1px solid #e5e7eb;
-  font-size: 0.9rem;
-  position: sticky; /* Para que la cabecera no se pierda al bajar */
-  top: 0;
-  z-index: 2;
-}
-.cal-header-cell:last-child { border-right: none; }
-
-.cal-time-cell {
-  text-align: center;
-  padding-top: 1rem;
+  padding: 3rem;
   color: #6b7280;
-  font-size: 0.8rem;
-  font-weight: bold;
-  border-right: 1px solid #e5e7eb;
-  border-bottom: 1px solid #e5e7eb;
-  background-color: #fcfcfc;
+  font-size: 1.1rem;
 }
 
-.cal-cell {
-  border-right: 1px solid #e5e7eb;
-  border-bottom: 1px solid #e5e7eb;
-  min-height: 100px; 
-  padding: 4px;
-  position: relative;
-  transition: background 0.2s;
+.horarios-grid-dinamico {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem;
 }
-.cal-cell:last-child { border-right: none; }
-.cal-cell:hover {
-  background-color: #f1f5f9;
+
+.horario-card {
+  border-radius: 12px;
+  padding: 1.2rem;
   cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-left: 6px solid;
+  background-color: white;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
 }
 
-.cal-event-block {
-  background-color: #fecaca; 
-  border-left: 4px solid #ef4444; 
-  color: #7f1d1d;
-  height: 100%;
-  border-radius: 4px;
+.horario-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+}
+
+/* Colores de estado */
+.card-verde {
+  border-left-color: #10b981; /* Verde esmeralda */
+  background-color: #ecfdf5; /* Fondo verde muy clarito */
+}
+
+.card-verde .horario-estado { color: #047857; background: #d1fae5; }
+
+.card-roja {
+  border-left-color: #ef4444; /* Rojo */
+  background-color: #fef2f2; /* Fondo rojo muy clarito */
+}
+
+.card-roja .horario-estado { color: #b91c1c; background: #fee2e2; }
+
+/* Textos internos */
+.horario-card-header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  font-size: 0.8rem;
-  font-weight: bold;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  transition: transform 0.1s, filter 0.1s;
-  cursor: pointer;
+  margin-bottom: 1rem;
 }
 
-.cal-event-block:hover {
-  transform: scale(1.02); 
-  filter: brightness(0.95);
-  z-index: 10;
+.horario-fecha {
+  font-weight: 700;
+  color: #374151;
+  font-size: 0.95rem;
+}
+
+.horario-estado {
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
+.horario-hora {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.3rem;
+  color: #111827;
+}
+
+.horario-docente {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.9rem;
 }
