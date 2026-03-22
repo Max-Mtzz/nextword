@@ -25,11 +25,6 @@ import bookIcon2 from '../assets/book_icon_2.svg';
 import chinaIcon from '../assets/china_icon.svg';
 import usaIcon from '../assets/china_icon.svg';
 
-const maestrosData = [
-  { id: 1, nombre: 'María Magdalena Ortiz', correo: 'maria.ortiz@idiomas.com', rol: 'Maestro', curso: 'Chino', telefono: '5587654321' },
-  { id: 2, nombre: 'Diego Salazar', correo: 'diego.s@idiomas.com', rol: 'Maestro', curso: 'Inglés', telefono: '5511223344' },
-];
-
 const cursosData = [
   { id: 1, nombre: 'Inglés', flag: usaIcon },
   { id: 2, nombre: 'Chino', flag: chinaIcon },
@@ -43,6 +38,7 @@ export const DashboardAdmin = () => {
   const token = localStorage.getItem('token');
 
   const [alumnos, setAlumnos] = useState([]);
+  const [maestros, setMaestros] = useState([]);
 
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
@@ -66,8 +62,11 @@ export const DashboardAdmin = () => {
       });
       const soloAlumnos = response.data.filter(u => u.role.toLowerCase() === 'alumno');
       setAlumnos(soloAlumnos);
+
+      const soloMaestros = response.data.filter(u => u.role.toLowerCase() === 'docente');
+      setMaestros(soloMaestros);
     } catch (error) {
-      console.error("Error al cargar alumnos:", error);
+      console.error("Error al cargar usuarios:", error);
     }
   };
 
@@ -147,14 +146,14 @@ export const DashboardAdmin = () => {
               <div className="calendar-title-container" style={{ marginBottom: '1.5rem' }}>
                 <h2>Maestros - Usuarios registrados</h2>
               </div>
-              <button className="btn-add" onClick={() => setUserForm({ isOpen: true, type: 'maestro', mode: 'add', data: null })}>+ Añadir</button>
+              <button className="btn-add" onClick={() => setUserForm({ isOpen: true, type: 'docente', mode: 'add', data: null })}>+ Añadir</button>
             </div>
             <button className="btn-back" onClick={() => setActiveView('main')} style={{ flexShrink: 0 }}>{'<'} Atrás</button>
           </div>
           <TablaUsuarios
-            data={maestrosData}
-            onEdit={(maestro) => setUserForm({ isOpen: true, type: 'maestro', mode: 'edit', data: maestro })}
-            onDelete={(maestro) => setDeleteUser({ isOpen: true, step: 1, type: 'maestro', data: maestro })}
+            data={maestros}
+            onEdit={(docente) => setUserForm({ isOpen: true, type: 'docente', mode: 'edit', data: docente })}
+            onDelete={(docente) => setDeleteUser({ isOpen: true, step: 1, type: 'docente', data: docente })}
           />
         </>
       )}
