@@ -1,22 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './ModalConfirmarPassword.css';
 
 export const ModalConfirmarPassword = ({ isOpen, onClose, onConfirm }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(false);
 
+  // Limpiamos los campos cada vez que se abre/cierra el modal
+  useEffect(() => {
+    if (isOpen) {
+      setPassword('');
+      setError(false);
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // SIMULACIÓN: Aquí luego harás la petición a Spring Boot para validar
-    // Por ahora, si la contraseña es "1234" pasa, si no, tira el error rojo.
-    if (password === '1234') {
+    try {
+      // Le pasamos la contraseña al Dashboard y esperamos...
+      await onConfirm(password);
+      // Si pasa a la siguiente línea, es que la contraseña fue correcta.
+      setPassword(''); 
       setError(false);
-      setPassword(''); // Limpiamos para la próxima
-      onConfirm();     // Ejecutamos la eliminación real
-    } else {
+    } catch (err) {
+      // Si el Dashboard tira un error (contraseña incorrecta), encendemos el mensaje rojo
       setError(true);
     }
   };
