@@ -23,9 +23,6 @@ export const ModalExito = ({ isOpen, onClose, mensaje }) => {
           <button type="button" className="btn-confirm-success" onClick={onClose}>
             Confirmar
           </button>
-          <button type="button" className="btn-close-success" onClick={onClose}>
-            Cerrar
-          </button>
         </div>
 
       </div>
