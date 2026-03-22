@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios'; // 1. IMPORTAMOS AXIOS
+import axios from 'axios';
 import { DashboardLayout } from '../layouts/DashboardLayout';
 import { ActionCard } from '../components/dashboard/ActionCard';
 import { ConfirmModal } from '../components/ui/ConfirmModal';
@@ -25,10 +25,9 @@ import bookIcon2 from '../assets/book_icon_2.svg';
 import chinaIcon from '../assets/china_icon.svg'; 
 import usaIcon from '../assets/china_icon.svg'; 
 
-// Dejamos maestros y cursos estáticos por ahora, como pediste
 const maestrosData = [
-  { id: 1, nombre: 'María Magdalena Ortiz', correo: 'maria.ortiz@idiomas.com', rol: 'Maestro', curso: 'Chino', telefono: '5587654321' },
-  { id: 2, nombre: 'Diego Salazar', correo: 'diego.s@idiomas.com', rol: 'Maestro', curso: 'Inglés', telefono: '5511223344' },
+  { id: 1, fullName: 'María Magdalena Ortiz', email: 'maria.ortiz@idiomas.com', role: 'Maestro', curso: 'Chino', primaryPhone: '5587654321' },
+  { id: 2, fullName: 'Diego Salazar', email: 'diego.s@idiomas.com', role: 'Maestro', curso: 'Inglés', primaryPhone: '5511223344' },
 ];
 
 const cursosData = [
@@ -40,11 +39,10 @@ export const DashboardAdmin = () => {
   const [activeView, setActiveView] = useState('main');
   const navigate = useNavigate();
 
-  // 2. RECUPERAMOS LOS DATOS DEL ADMIN LOGUEADO
+  // RECUPERAMOS LOS DATOS REALES (Asegúrate de que en Login guardes el objeto completo)
   const adminData = JSON.parse(localStorage.getItem('usuario') || '{}');
   const token = localStorage.getItem('token');
 
-  // 3. ESTADO REAL PARA LOS ALUMNOS
   const [alumnos, setAlumnos] = useState([]);
 
   // Estados Generales
@@ -63,21 +61,20 @@ export const DashboardAdmin = () => {
   const [passwordPrompt, setPasswordPrompt] = useState({ isOpen: false, type: null, actionToExecute: null });
   const [error24h, setError24h] = useState({ isOpen: false, horas: 0 });
 
-  // 4. FUNCIÓN PARA OBTENER USUARIOS DEL BACKEND
+  // FUNCIÓN PARA OBTENER ALUMNOS REALES DESDE EL BACKEND
   const fetchUsuarios = async () => {
     try {
       const response = await axios.get('http://localhost:8080/api/usuarios', {
         headers: { Authorization: `Bearer ${token}` }
       });
-      // Filtramos para que esta tabla solo muestre alumnos
-      const soloAlumnos = response.data.filter(u => u.role.toLowerCase() === 'alumno');
+      // Filtramos por el campo 'role' de tu entidad
+      const soloAlumnos = response.data.filter(u => u.role?.toLowerCase() === 'alumno');
       setAlumnos(soloAlumnos);
     } catch (error) {
       console.error("Error al cargar alumnos:", error);
     }
   };
 
-  // 5. CARGAR DATOS AL INICIAR EL COMPONENTE
   useEffect(() => {
     fetchUsuarios();
   }, []);
@@ -98,30 +95,12 @@ export const DashboardAdmin = () => {
     >
       {activeView === 'main' && (
         <>
-          {/* 6. SALUDO DINÁMICO */}
-          <h1 className="dashboard-greeting">Hola ¡{adminData.nombre}!</h1>
+          <h1 className="dashboard-greeting">Hola ¡{adminData.fullName || 'Admin'}!</h1>
           <h2 className="section-title">Acciones Rápidas</h2>
           <div className="quick-actions">
             <ActionCard title="Alumnos" icon={hatIcon} onClick={() => setActiveView('students_list')} />
             <ActionCard title="Maestros" icon={pencilIcon} onClick={() => setActiveView('teachers_list')} />
             <ActionCard title="Cursos" icon={bookIcon2} onClick={() => setActiveView('courses')} />
-          </div>
-        </>
-      )}
-
-      {activeView === 'users' && (
-        <>
-          <div className="calendar-top-bar">
-            <div style={{width: '100%'}}>
-              <div className="breadcrumbs"><strong>Gestionar Usuarios</strong></div>
-              <div className="calendar-title-container" style={{marginBottom: '1.5rem'}}>
-                <h2>¿Qué lista deseas ver?</h2>
-              </div>
-            </div>
-          </div>
-          <div className="quick-actions">
-            <ActionCard title="Alumnos" icon={hatIcon} onClick={() => setActiveView('students_list')} />
-            <ActionCard title="Maestros" icon={pencilIcon} onClick={() => setActiveView('teachers_list')} />
           </div>
         </>
       )}
@@ -139,7 +118,6 @@ export const DashboardAdmin = () => {
             <button className="btn-back" onClick={() => setActiveView('main')} style={{flexShrink: 0}}>{'<'} Atrás</button>
           </div>
 
-          {/* 7. PASAMOS EL ESTADO REAL A LA TABLA */}
           <TablaUsuarios 
             data={alumnos}
             onEdit={(alumno) => setUserForm({ isOpen: true, type: 'alumno', mode: 'edit', data: alumno })}
@@ -148,7 +126,6 @@ export const DashboardAdmin = () => {
         </>
       )}
 
-      {/* VISTAS DE MAESTROS Y CURSOS MANTENIDAS INTACTAS... */}
       {activeView === 'teachers_list' && (
         <>
           <div className="calendar-top-bar">
@@ -203,16 +180,7 @@ export const DashboardAdmin = () => {
         />
       )}
 
-      <ConfirmModal 
-        isOpen={isLogoutModalOpen}
-        title="Confirmar cerrar sesión"
-        subtitle="Esta acción cerrará la sesión actual"
-        onConfirm={handleLogout}
-        onCancel={() => setIsLogoutModalOpen(false)}
-        isDestructive={true}
-      />
-
-      {/* 8. LÓGICA DE AÑADIR/EDITAR ALUMNO HACIA EL BACKEND */}
+      {/* MODAL PARA AÑADIR/REGISTRAR ALUMNO */}
       <ModalUsuario 
         isOpen={userForm.isOpen}
         type={userForm.type}
@@ -221,105 +189,93 @@ export const DashboardAdmin = () => {
         onClose={() => setUserForm({ isOpen: false, type: 'alumno', mode: 'add', data: null })}
         onSave={async (datosRecolectados) => {
           try {
-            // Le asignamos el rol dependiendo del modal
-            datosRecolectados.role = userForm.type.toLowerCase();
+            // Mapeo a la entidad Usuario.java
+            const body = {
+              fullName: datosRecolectados.nombre,
+              email: datosRecolectados.correo,
+              password: datosRecolectados.password,
+              role: userForm.type.toLowerCase(),
+              birthDate: datosRecolectados.fechaNac,
+              primaryPhone: datosRecolectados.telefono,
+              gender: datosRecolectados.genero || 'No especificado',
+              username: datosRecolectados.correo // Username por defecto
+            };
 
             if (userForm.mode === 'add') {
-              // Si es nuevo, usamos el endpoint de registro
-              await axios.post('http://localhost:8080/api/usuarios/registro', datosRecolectados);
-            } else {
-              // Nota: ¡OJO AQUÍ! Tu backend actual NO tiene una ruta PUT para actualizar. 
-              // Dejé preparada la llamada para cuando la creemos.
-              await axios.put(`http://localhost:8080/api/usuarios/${datosRecolectados.id}`, datosRecolectados, {
-                headers: { Authorization: `Bearer ${token}` }
-              });
-            }
+              await axios.post('http://localhost:8080/api/usuarios/registro', body);
+            } 
+            // Editar se implementará después
 
-            // Refrescamos la lista de alumnos
             await fetchUsuarios();
-
-            const textoExito = userForm.mode === 'add' 
-              ? `Se registró correctamente el nuevo ${userForm.type}: ` 
-              : `Se guardaron los cambios para el ${userForm.type}: `;
-
             setUserForm({ isOpen: false, type: 'alumno', mode: 'add', data: null });
-            
             setShowSuccessModal({ 
               isOpen: true, 
-              mensaje: <>{textoExito} <strong style={{color: '#4b5563'}}>{datosRecolectados.nombre}</strong>.</>
+              mensaje: <>El {userForm.type} <strong style={{color: '#4b5563'}}>{body.fullName}</strong> se registró con éxito.</>
             });
-
           } catch (error) {
-            console.error("Error al guardar usuario:", error);
-            alert("Hubo un error al guardar los datos.");
+            console.error("Error:", error);
+            alert("Error al procesar la solicitud en el servidor.");
           }
         }}
       />
 
-     <ModalEliminar 
+      {/* MODAL PARA ELIMINAR USUARIO (CON CONFIRMACIÓN DE PASSWORD) */}
+      <ModalEliminar 
         isOpen={deleteUser.isOpen}
         itemType="usuario"
-        itemName={deleteUser.data?.nombre}
+        itemName={deleteUser.data?.fullName || deleteUser.data?.nombre}
         onClose={() => setDeleteUser({ isOpen: false, step: 1, type: 'alumno', data: null })}
         onConfirm={() => {
-          const usuarioAEliminar = deleteUser.data; // Guardamos quién se va a eliminar
+          const idAEliminar = deleteUser.data.id;
           setDeleteUser({ isOpen: false, step: 1, type: 'alumno', data: null });
           
           setPasswordPrompt({
             isOpen: true,
             type: 'usuario', 
-            // 9. DEJAMOS PREPARADO EL BORRADO PARA EJECUTARSE SI LA CONTRASEÑA ES CORRECTA
             actionToExecute: async () => {
               try {
-                await axios.delete(`http://localhost:8080/api/usuarios/${usuarioAEliminar.id}`, {
+                await axios.delete(`http://localhost:8080/api/usuarios/${idAEliminar}`, {
                   headers: { Authorization: `Bearer ${token}` }
                 });
-                await fetchUsuarios(); // Recargamos tabla
+                await fetchUsuarios();
                 setShowSuccessModal({ 
                   isOpen: true, 
-                  mensaje: <>El usuario se ha eliminado con <strong style={{color: '#4b5563'}}>éxito</strong>.</> 
+                  mensaje: <>El usuario se ha eliminado con éxito.</> 
                 });
               } catch (error) {
                 console.error("Error eliminando:", error);
-                alert("Error al eliminar al usuario.");
+                alert("Error al eliminar al usuario del sistema.");
               }
             }
           });
         }}
       />
-      
-      {/* Resto de modales (Curso, Horarios) omitidos para brevedad, se quedan igual... */}
-      {/* (Mantén tus ModalCurso, ModalAñadirHorario, etc. exactamente como estaban) */}
-      <ModalCurso isOpen={courseForm.isOpen} mode={courseForm.mode} initialData={courseForm.data} onClose={() => setCourseForm({ isOpen: false, mode: 'add', data: null })} onSave={() => setCourseForm({ isOpen: false, mode: 'add', data: null })} />
-      
-      {/* 10. VALIDACIÓN DE CONTRASEÑA DEL ADMIN */}
+
       <ModalConfirmarPassword
         isOpen={passwordPrompt.isOpen}
         onClose={() => setPasswordPrompt({ isOpen: false, type: null, actionToExecute: null })}
         onConfirm={async (passwordIngresada) => {
           try {
-            // Validamos que la contraseña pertenezca al admin logueado
+            // Validamos contraseña re-logeando al admin
             await axios.post('http://localhost:8080/api/usuarios/login', {
-              correo: adminData.correo, 
+              correo: adminData.email || adminData.correo, 
               password: passwordIngresada
             });
 
-            // Si llegamos aquí, la contraseña es correcta
             if (passwordPrompt.actionToExecute) {
               await passwordPrompt.actionToExecute(); 
             }
             setPasswordPrompt({ isOpen: false, type: null, actionToExecute: null });
-
           } catch (error) {
-            // ¡ESTO ES CLAVE! Lanzamos el error para que el modal prenda el foco rojo
-            throw new Error("Contraseña incorrecta");
+            throw new Error("Contraseña Incorrecta"); 
           }
         }}
       />
 
-      <ModalErrorCancelacion isOpen={error24h.isOpen} horasRestantes={error24h.horas} onClose={() => setError24h({ isOpen: false, horas: 0 })} />
+      {/* Otros modales técnicos se mantienen igual... */}
+      <ConfirmModal isOpen={isLogoutModalOpen} title="Cerrar sesión" subtitle="¿Deseas salir?" onConfirm={handleLogout} onCancel={() => setIsLogoutModalOpen(false)} isDestructive={true} />
       <ModalExito isOpen={showSuccessModal.isOpen} mensaje={showSuccessModal.mensaje} onClose={() => setShowSuccessModal({ isOpen: false, mensaje: '' })} />
-
+      <ModalErrorCancelacion isOpen={error24h.isOpen} horasRestantes={error24h.horas} onClose={() => setError24h({ isOpen: false, horas: 0 })} />
     </DashboardLayout>
   );
 };

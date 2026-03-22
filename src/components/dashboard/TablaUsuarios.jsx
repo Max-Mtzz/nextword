@@ -15,11 +15,12 @@ export const TablaUsuarios = ({ data, onEdit, onDelete }) => {
           </tr>
         </thead>
         <tbody>
-          {data.map((usuario) => (
+          {data && data.map((usuario) => (
             <tr key={usuario.id}>
-              <td>{usuario.nombre}</td>
-              <td>{usuario.correo}</td>
-              <td>{usuario.fechaNac}</td>
+              {/* Usamos || para que funcione con datos reales (fullName) o simulados (nombre) */}
+              <td>{usuario.fullName || usuario.nombre}</td>
+              <td>{usuario.email || usuario.correo}</td>
+              <td>{usuario.birthDate || usuario.fechaNac}</td>
               <td>
                 <div className="table-actions">
                   <button className="action-icon-btn" onClick={() => onEdit(usuario)}>
