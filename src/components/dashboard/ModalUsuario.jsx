@@ -9,16 +9,31 @@ export const ModalUsuario = ({ isOpen, onClose, onSave, type = 'alumno', mode = 
 
   useEffect(() => {
     if (initialData && mode === 'edit') {
-      setFormData(initialData);
+      // Mapeo exhaustivo para asegurar que todos los campos se carguen
+      setFormData({
+        nombre: initialData.fullName || '',
+        correo: initialData.email || '',
+        telefono: initialData.primaryPhone || '',
+        telefonoEmergencia: initialData.emergencyPhone || '', // Carga desde el backend
+        genero: initialData.gender || '',
+        password: '' // Siempre vacío en edición
+      });
+
       if (initialData.birthDate) {
-        // Asumiendo que el back manda YYYY-MM-DD
         const parts = initialData.birthDate.split('-');
         setYear(parts[0]);
         setMonth(parts[1]);
         setDay(parts[2]);
       }
     } else {
-      setFormData({});
+      setFormData({
+        nombre: '',
+        correo: '',
+        telefono: '',
+        telefonoEmergencia: '',
+        genero: '',
+        password: ''
+      });
       setDay(''); setMonth(''); setYear('');
     }
   }, [initialData, mode, isOpen]);
@@ -32,8 +47,8 @@ export const ModalUsuario = ({ isOpen, onClose, onSave, type = 'alumno', mode = 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validación de contraseña (mínimo 8 caracteres)
-    if (mode === 'add' && formData.password?.length < 8) {
+    // Validación de contraseña solo al añadir
+    if (mode === 'add' && (!formData.password || formData.password.length < 8)) {
       alert("La contraseña debe tener al menos 8 caracteres.");
       return;
     }
@@ -59,25 +74,33 @@ export const ModalUsuario = ({ isOpen, onClose, onSave, type = 'alumno', mode = 
           <div className="form-row">
             <div className="form-group">
               <label>Nombre Completo*</label>
-              <input type="text" name="nombre" className="form-control" onChange={handleChange} defaultValue={initialData?.fullName || ''} placeholder="Nombre Completo" required />
+              <input type="text" name="nombre" className="form-control" onChange={handleChange} value={formData.nombre} placeholder="Nombre Completo" required />
             </div>
           </div>
 
           <div className="form-row">
             <div className="form-group">
               <label>Correo*</label>
-              <input type="email" name="correo" className="form-control" onChange={handleChange} defaultValue={initialData?.email || ''} placeholder="Correo Electrónico" required />
+              <input type="email" name="correo" className="form-control" onChange={handleChange} value={formData.correo} placeholder="Correo Electrónico" required />
             </div>
             <div className="form-group">
               <label>Teléfono principal*</label>
-              <input type="text" name="telefono" className="form-control" onChange={handleChange} defaultValue={initialData?.primaryPhone || ''} placeholder="10 dígitos" required />
+              <input type="text" name="telefono" className="form-control" onChange={handleChange} value={formData.telefono} placeholder="10 dígitos" required />
             </div>
           </div>
 
           <div className="form-row">
             <div className="form-group">
               <label>Teléfono de emergencia*</label>
-              <input type="text" name="telefonoEmergencia" className="form-control" onChange={handleChange} placeholder="10 dígitos" required />
+              <input
+                type="text"
+                name="telefonoEmergencia"
+                className="form-control"
+                onChange={handleChange}
+                value={formData.telefonoEmergencia}
+                placeholder="10 dígitos"
+                required
+              />
             </div>
           </div>
 
@@ -102,31 +125,29 @@ export const ModalUsuario = ({ isOpen, onClose, onSave, type = 'alumno', mode = 
           <div className="form-row">
             <div className="form-group">
               <label>Género*</label>
-              <select
-                name="genero"
-                className="form-select"
-                onChange={handleChange}
-                required
-              >
+              <select name="genero" className="form-select" onChange={handleChange} value={formData.genero} required>
                 <option value="">Selecciona una opción</option>
-                {/* IMPORTANTE: Los 'value' deben estar en minúsculas */}
                 <option value="masculino">Masculino</option>
                 <option value="femenino">Femenino</option>
                 <option value="otro">Otro</option>
               </select>
             </div>
-            <div className="form-group">
-              <label>Contraseña*</label>
-              <input
-                type="password"
-                name="password"
-                className="form-control"
-                onChange={handleChange}
-                placeholder="Mínimo 8 caracteres"
-                minLength="8"
-                required={mode === 'add'}
-              />
-            </div>
+            
+            {/* Solo se muestra la contraseña al añadir */}
+            {mode === 'add' && (
+              <div className="form-group">
+                <label>Contraseña*</label>
+                <input
+                  type="password"
+                  name="password"
+                  className="form-control"
+                  onChange={handleChange}
+                  placeholder="Mínimo 8 caracteres"
+                  minLength="8"
+                  required
+                />
+              </div>
+            )}
           </div>
 
           <div className="modal-footer" style={{ marginTop: '2rem' }}>
